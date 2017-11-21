@@ -1,11 +1,13 @@
 package cz.inventi.elmdroid
 
+import android.arch.lifecycle.LiveData
+
 /**
  * Created by tomas.valenta on 11/16/2017.
  */
 
-interface ComponentRuntime<STATE : State, in MSG : Msg> {
-//    fun state(): LiveData<STATE>
+interface ComponentController<STATE : State, in MSG : Msg> {
+    fun state(): LiveData<STATE>
     fun dispatchMsg(msg: MSG)
 }
 
