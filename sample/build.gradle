@@ -30,6 +30,11 @@ dependencies {
     implementation deps.timber
     implementation deps.lifecycle.extensions
 
+    // rx
+    implementation deps.rx_java2
+    implementation deps.rx_android
+    implementation deps.rx_relay
+
     implementation deps.kotlin.stdlib
     implementation deps.support.app_compat
     implementation deps.constraint_layout
