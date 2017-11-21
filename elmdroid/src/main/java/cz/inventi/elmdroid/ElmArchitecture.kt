@@ -8,7 +8,7 @@ import android.arch.lifecycle.LiveData
 
 interface ComponentController<STATE : State, in MSG : Msg> {
     fun state(): LiveData<STATE>
-    fun dispatchMsg(msg: MSG)
+    fun dispatch(msg: MSG)
 }
 
 interface Component<STATE : State, in MSG : Msg> {

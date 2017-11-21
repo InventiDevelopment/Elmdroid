@@ -19,9 +19,9 @@ class LoginActivity : AppCompatActivity(), LoginView {
         controller.state().observe(this, LoginRenderer(this))
 
         // setup msg dispatching
-        email().setOnTextChangeListener { controller.dispatchMsg(EmailChanged(it)) }
-        password().setOnTextChangeListener { controller.dispatchMsg(PasswordChanged(it)) }
-        loginButton().setOnClickListener { controller.dispatchMsg(LoginClicked) }
+        email().setOnTextChangeListener { controller.dispatch(EmailChanged(it)) }
+        password().setOnTextChangeListener { controller.dispatch(PasswordChanged(it)) }
+        loginButton().setOnClickListener { controller.dispatch(LoginClicked) }
     }
 
     override fun email() = email

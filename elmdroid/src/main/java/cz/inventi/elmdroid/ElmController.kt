@@ -35,7 +35,7 @@ class ElmController<STATE : State, in MSG : Msg> (component: Component<STATE, MS
 
     override fun state(): LiveData<STATE> = state
 
-    override fun dispatchMsg(msg: MSG) {
+    override fun dispatch(msg: MSG) {
         msgRelay.accept(msg)
         Timber.d("Msg dispatched: %s", msg)
     }
