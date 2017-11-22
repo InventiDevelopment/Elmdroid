@@ -11,7 +11,7 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
 /**
- * Created by tomas.valenta on 11/16/2017.
+ *  Implementation of ComponentController based on RxJava and RxRelay
  */
 class ElmController<STATE : State, in MSG : Msg, CMD : Cmd> (component: Component<STATE, MSG, CMD>) : ComponentController<STATE, MSG> {
 
