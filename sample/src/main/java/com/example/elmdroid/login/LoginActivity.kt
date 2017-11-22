@@ -2,6 +2,7 @@ package com.example.elmdroid.login
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import com.example.elmdroid.R
 import com.example.elmdroid.common.setOnTextChangeListener
 import cz.inventi.elmdroid.ElmController
@@ -29,4 +30,6 @@ class LoginActivity : AppCompatActivity(), LoginView {
     override fun loginButton() = loginButton
     override fun progressBar() = progressBar
     override fun loggedUser() = loggedUser
+    override fun showUserMsg(userMsg: String) = Toast.makeText(this, userMsg, Toast.LENGTH_LONG).show()
+
 }

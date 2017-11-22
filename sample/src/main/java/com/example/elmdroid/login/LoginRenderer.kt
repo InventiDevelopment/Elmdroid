@@ -20,6 +20,16 @@ class LoginRenderer(private val view: LoginView) : Observer<LoginState>, Lifecyc
                 view.progressBar().visibility = View.GONE
             }
 
+            if (view.email().text.toString() != email) {
+                view.email().setText(email)
+            }
+            if (view.password().text.toString() != password) {
+                view.password().setText(password)
+            }
+
+            if (userMsg.isNotBlank()) {
+                view.showUserMsg(userMsg)
+            }
         }
     }
 }

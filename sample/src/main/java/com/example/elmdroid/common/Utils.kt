@@ -11,6 +11,5 @@ fun EditText.setOnTextChangeListener(listener: (String) -> Unit) {
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
         override fun onTextChanged(chars: CharSequence?, p1: Int, p2: Int, p3: Int) { listener(chars.toString()) }
-
     })
 }
