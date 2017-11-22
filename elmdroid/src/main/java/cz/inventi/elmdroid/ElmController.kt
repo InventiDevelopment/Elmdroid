@@ -2,19 +2,18 @@ package cz.inventi.elmdroid
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.util.Log
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.BiFunction
+import io.reactivex.rxkotlin.zipWith
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
-import java.util.logging.Logger
 
 /**
  * Created by tomas.valenta on 11/16/2017.
  */
-class ElmController<STATE : State, in MSG : Msg> (component: Component<STATE, MSG>) : ComponentController<STATE, MSG> {
+class ElmController<STATE : State, in MSG : Msg, CMD : Cmd> (component: Component<STATE, MSG, CMD>) : ComponentController<STATE, MSG> {
 
     private val msgRelay: BehaviorRelay<MSG> = BehaviorRelay.create()
     private val stateRelay: BehaviorRelay<STATE> = BehaviorRelay.create()
@@ -24,13 +23,21 @@ class ElmController<STATE : State, in MSG : Msg> (component: Component<STATE, MS
     init {
         updateStateValue(component.initState())
 
-        Observable.zip(msgRelay, stateRelay, BiFunction<MSG, STATE, STATE> { msg, prevState -> component.update(msg, prevState) })
+        msgRelay.zipWith(stateRelay)
+                .map { (msg, prevState) -> component.update(msg, prevState) }
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    updateStateValue(it)
-                    Timber.d("State updated to: %s", it)
+                .doOnNext { (newState, _) -> updateStateValue(newState) }
+                .map { (_, cmd) -> cmd }
+                .filter { component.filterCmd(it) }
+                .observeOn(Schedulers.newThread())
+                .flatMap { cmd -> processCmd(cmd, component)}
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { resultMsg ->
+//                    updateStateValue(stateRelay.value) // to create pair for zip function for dispatch processing
+                    dispatch(resultMsg)
                 }
+
     }
 
     override fun state(): LiveData<STATE> = state
@@ -43,5 +50,16 @@ class ElmController<STATE : State, in MSG : Msg> (component: Component<STATE, MS
     private fun updateStateValue(stateVal: STATE) {
         state.value = stateVal
         stateRelay.accept(stateVal)
+        Timber.d("State updated to: %s", stateVal)
+    }
+
+    private fun processCmd(cmd: CMD, component: Component<STATE, MSG, CMD>): Observable<MSG>? {
+        Timber.d("Call cmd: %s", cmd)
+        return component.call(cmd)
+                .onErrorResumeNext { error ->
+                    Timber.d("Error %s after cmd ", error, cmd)
+                    Single.just(component.handleCmdError(error, cmd))
+                }
+                .toObservable()
     }
 }

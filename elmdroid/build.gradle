@@ -31,4 +31,5 @@ dependencies {
     implementation deps.rx_java2
     implementation deps.rx_android
     implementation deps.rx_relay
+    implementation deps.rx_kotlin
 }

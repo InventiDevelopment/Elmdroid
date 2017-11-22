@@ -16,6 +16,18 @@ interface Component<STATE : State, MSG : Msg, CMD : Cmd> {
     fun initState(): STATE
     fun update(msg: MSG, prevState: STATE): Pair<STATE, CMD>
     fun call(cmd: CMD): Single<MSG>
+
+    /**
+     * Defines commands that won's be propagated to call method
+     * default implementation doesn't filter any command
+     */
+    fun filterCmd(cmd: CMD): Boolean = true
+
+    /**
+     * Define how to handle errors emitted by tasks
+     */
+    fun handleCmdError(error: Throwable, cmd: CMD): MSG
+
 }
 
 interface State
