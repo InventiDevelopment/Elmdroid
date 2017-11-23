@@ -42,12 +42,14 @@ class LoginComponent : Component<LoginState, LoginMsg, LoginCmd> {
 }
 
 
+// Tasks
 fun loginTask(email: String, password: String): Single<LoginMsg> {
     pause(2000)
     UserRepository().setUser(email)
     return Single.just(LoginSuccess("Mr/Mrs $email"))
 }
 
+// Subscriptions
 fun userSubscription(): Observable<LoginMsg> = UserRepository().getUser().map {
     pause(2000)
     LoggedUserChanged(it.username)
