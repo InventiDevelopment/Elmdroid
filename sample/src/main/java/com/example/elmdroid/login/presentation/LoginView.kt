@@ -14,5 +14,6 @@ interface LoginView {
     fun loginButton(): Button
     fun progressBar(): ProgressBar
     fun loggedUser(): TextView
+    fun timer(): TextView
     fun showUserMsg(userMsg: String)
 }

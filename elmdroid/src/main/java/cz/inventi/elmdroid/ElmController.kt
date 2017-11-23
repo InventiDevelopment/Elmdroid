@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
+import io.reactivex.Observer
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -26,9 +27,8 @@ class ElmController<STATE : State, in MSG : Msg, CMD : Cmd> (component: Componen
     init {
         updateStateValue(component.initState())
 
-        val stateAfterSubs = stateRelay.doOnNext(state -> )
-
-        msgRelay.zipWith(stateAfterSubs)
+        compositeDisposable.add(
+            msgRelay.zipWith(stateRelay)
                 .map { (msg, prevState) -> component.update(msg, prevState) }
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -38,13 +38,23 @@ class ElmController<STATE : State, in MSG : Msg, CMD : Cmd> (component: Componen
                 .observeOn(Schedulers.newThread())
                 .flatMap { cmd -> processCmd(cmd, component)}
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith { resultMsg -> dispatch(resultMsg)}
+                .subscribe { dispatch(it) }
+        )
 
-
-
+        compositeDisposable.add(
+            component.subscriptions()
+                .onErrorResumeNext { error: Throwable -> Observable.just(component.onError(error)) }
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    dispatch(it)
+                }
+        )
     }
 
     override fun state(): LiveData<STATE> = state
+
+    override fun onCleared() = compositeDisposable.clear()
 
     override fun dispatch(msg: MSG) {
         msgRelay.accept(msg)

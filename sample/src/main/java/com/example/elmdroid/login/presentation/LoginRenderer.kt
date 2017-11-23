@@ -30,6 +30,8 @@ class LoginRenderer(private val view: LoginView) : Observer<LoginState>, Lifecyc
             if (msgText.isNotBlank()) {
                 view.showUserMsg(msgText)
             }
+
+            view.timer().text = "$loggedTimer"
         }
     }
 }

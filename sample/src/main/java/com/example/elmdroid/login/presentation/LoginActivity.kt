@@ -30,6 +30,7 @@ class LoginActivity : AppCompatActivity(), LoginView {
     override fun loginButton() = loginButton
     override fun progressBar() = progressBar
     override fun loggedUser() = loggedUser
+    override fun timer() = timer
     override fun showUserMsg(userMsg: String) = Toast.makeText(this, userMsg, Toast.LENGTH_LONG).show()
 
 }

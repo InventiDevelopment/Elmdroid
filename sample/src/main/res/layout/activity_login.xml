@@ -63,7 +63,7 @@
         android:layout_marginStart="8dp"
         android:textSize="28dp"
         app:layout_constraintBottom_toBottomOf="@+id/loggedUserLabel"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/timer"
         app:layout_constraintStart_toEndOf="@+id/loggedUserLabel" />
 
     <ProgressBar
@@ -79,4 +79,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:text="0"
+        android:textSize="28dp"
+        app:layout_constraintBottom_toBottomOf="@+id/loggedUser"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/loggedUser" />
 </android.support.constraint.ConstraintLayout>
