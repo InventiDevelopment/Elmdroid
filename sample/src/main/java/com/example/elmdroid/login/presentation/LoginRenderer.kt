@@ -1,4 +1,4 @@
-package com.example.elmdroid.login
+package com.example.elmdroid.login.presentation
 
 import android.arch.lifecycle.LifecycleObserver
 import android.arch.lifecycle.Observer
@@ -27,8 +27,8 @@ class LoginRenderer(private val view: LoginView) : Observer<LoginState>, Lifecyc
                 view.password().setText(password)
             }
 
-            if (userMsg.isNotBlank()) {
-                view.showUserMsg(userMsg)
+            if (msgText.isNotBlank()) {
+                view.showUserMsg(msgText)
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.example.elmdroid.login
+package com.example.elmdroid.login.presentation
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle

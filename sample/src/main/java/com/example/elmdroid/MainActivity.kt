@@ -3,7 +3,7 @@ package com.example.elmdroid
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import com.example.elmdroid.login.LoginActivity
+import com.example.elmdroid.login.presentation.LoginActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 
