@@ -33,8 +33,8 @@ class ElmController<STATE : State, in MSG : Msg, CMD : Cmd> (component: Componen
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext { (newState, _) -> updateStateValue(newState) }
+                .filter{ (_, maybeCmd) -> maybeCmd != null }
                 .map { (_, cmd) -> cmd }
-                .filter { component.filterCmd(it) }
                 .observeOn(Schedulers.newThread())
                 .flatMap { cmd -> processCmd(cmd, component)}
                 .observeOn(AndroidSchedulers.mainThread())
@@ -46,9 +46,7 @@ class ElmController<STATE : State, in MSG : Msg, CMD : Cmd> (component: Componen
                 .onErrorResumeNext { error: Throwable -> Observable.just(component.onError(error)) }
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    dispatch(it)
-                }
+                .subscribe { dispatch(it) }
         )
     }
 

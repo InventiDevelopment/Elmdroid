@@ -10,11 +10,13 @@ import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity(), LoginView {
 
+    private lateinit var controller: ElmController<LoginState, LoginMsg, LoginCmd>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val controller = ElmController(LoginComponent())
+        controller = ElmController(LoginComponent())
 
         // observe state
         controller.state().observe(this, LoginRenderer(this))
@@ -23,6 +25,11 @@ class LoginActivity : AppCompatActivity(), LoginView {
         email().setOnTextChangeListener { controller.dispatch(EmailChanged(it)) }
         password().setOnTextChangeListener { controller.dispatch(PasswordChanged(it)) }
         loginButton().setOnClickListener { controller.dispatch(LoginClicked) }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        controller.onCleared()
     }
 
     override fun email() = email
