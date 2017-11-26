@@ -11,7 +11,7 @@ import io.reactivex.Single
 interface ComponentController<STATE : State, in MSG : Msg> {
     fun state(): LiveData<STATE>
     fun dispatch(msg: MSG)
-    fun onCleared()
+    fun clear()
 }
 
 interface Component<STATE : State, MSG : Msg, CMD : Cmd> {

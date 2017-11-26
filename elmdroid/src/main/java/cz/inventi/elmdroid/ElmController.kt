@@ -52,7 +52,7 @@ class ElmController<STATE : State, in MSG : Msg, CMD : Cmd> (component: Componen
 
     override fun state(): LiveData<STATE> = state
 
-    override fun onCleared() = compositeDisposable.clear()
+    override fun clear() = compositeDisposable.clear()
 
     override fun dispatch(msg: MSG) {
         msgRelay.accept(msg)

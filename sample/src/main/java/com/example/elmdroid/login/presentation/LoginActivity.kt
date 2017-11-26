@@ -29,7 +29,7 @@ class LoginActivity : AppCompatActivity(), LoginView {
 
     override fun onDestroy() {
         super.onDestroy()
-        controller.onCleared()
+        controller.clear()
     }
 
     override fun email() = email
