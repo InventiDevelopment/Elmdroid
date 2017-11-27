@@ -3,7 +3,9 @@ package com.example.elmdroid
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import com.example.elmdroid.login.LoginActivity
+import com.example.elmdroid.counter.CounterActivity
+import com.example.elmdroid.login.presentation.LoginActivity
+import com.example.elmdroid.login.presentation.LoginVMActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -13,12 +15,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        basic.setOnClickListener { startSample(LoginActivity::class.java) }
-
+        counter.setOnClickListener { Intent(this, CounterActivity::class.java).start() }
+        login.setOnClickListener { Intent(this, LoginActivity::class.java).start() }
+        loginViewModel.setOnClickListener { Intent(this, LoginVMActivity::class.java).start() }
     }
 
-    private fun startSample(classRef: Class<LoginActivity>) {
-        val intent = Intent(this, classRef)
-        startActivity(intent)
-    }
+    private fun Intent.start() = startActivity(this)
+
 }

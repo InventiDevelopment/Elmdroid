@@ -13,3 +13,12 @@ fun EditText.setOnTextChangeListener(listener: (String) -> Unit) {
         override fun onTextChanged(chars: CharSequence?, p1: Int, p2: Int, p3: Int) { listener(chars.toString()) }
     })
 }
+
+fun pause(time: Long) {
+    try {
+        Thread.sleep(time)
+    } catch (e: InterruptedException) {
+        e.printStackTrace()
+        throw IllegalAccessException("Something went wrong!")
+    }
+}
