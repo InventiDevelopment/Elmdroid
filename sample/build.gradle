@@ -29,6 +29,7 @@ dependencies {
 
     implementation deps.timber
     implementation deps.lifecycle.extensions
+    implementation deps.lifecycle.java8
 
     // rx
     implementation deps.rx_java2
