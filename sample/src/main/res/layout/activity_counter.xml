@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp"
+    tools:context="com.example.elmdroid.counter.CounterActivity">
+
+    <Button
+        android:id="@+id/increment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Increment" />
+
+    <Button
+        android:id="@+id/decrement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Decrement" />
+
+    <TextView
+        android:id="@+id/counter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="32sp"
+        android:text="" />
+
+</LinearLayout>

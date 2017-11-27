@@ -14,7 +14,7 @@ abstract class ViewRenderer<in V : LifecycleOwner, S> (private var view: V?) : O
 
     override fun onChanged(state: S?) {
         view?.apply {
-            state?.apply {
+            if (state != null) {
                 render(state)
             }
         }
