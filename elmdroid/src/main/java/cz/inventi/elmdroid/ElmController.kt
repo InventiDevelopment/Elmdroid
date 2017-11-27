@@ -8,6 +8,7 @@ import io.reactivex.Observer
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.zipWith
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -37,8 +38,9 @@ class ElmController<STATE : State, in MSG : Msg, CMD : Cmd> (component: Componen
                 .map { (_, cmd) -> cmd }
                 .observeOn(Schedulers.newThread())
                 .flatMap { cmd -> processCmd(cmd, component)}
+                .onErrorResumeNext { error: Throwable -> Observable.just(component.onError(error)) }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { dispatch(it) }
+                .subscribe{ msg -> dispatch(msg) }
         )
 
         compositeDisposable.add(
@@ -46,7 +48,7 @@ class ElmController<STATE : State, in MSG : Msg, CMD : Cmd> (component: Componen
                 .onErrorResumeNext { error: Throwable -> Observable.just(component.onError(error)) }
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { dispatch(it) }
+                .subscribe { msg -> dispatch(msg) }
         )
     }
 
@@ -68,10 +70,10 @@ class ElmController<STATE : State, in MSG : Msg, CMD : Cmd> (component: Componen
     private fun processCmd(cmd: CMD, component: Component<STATE, MSG, CMD>): Observable<MSG>? {
         Timber.d("Call cmd: %s", cmd)
         return component.call(cmd)
-                .onErrorResumeNext { error ->
-                    Timber.d("Error %s after cmd %s", error, cmd)
-                    Single.just(component.onError(error))
-                }
+//                .onErrorResumeNext { error ->
+//                    Timber.d("Error %s after cmd %s", error, cmd)
+//                    Single.just(component.onError(error))
+//                }
                 .toObservable()
     }
 }

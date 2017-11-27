@@ -4,10 +4,6 @@ import android.arch.lifecycle.LiveData
 import io.reactivex.Observable
 import io.reactivex.Single
 
-/**
- * Created by tomas.valenta on 11/16/2017.
- */
-
 interface ComponentController<STATE : State, in MSG : Msg> {
     fun state(): LiveData<STATE>
     fun dispatch(msg: MSG)
@@ -17,7 +13,7 @@ interface ComponentController<STATE : State, in MSG : Msg> {
 interface Component<STATE : State, MSG : Msg, CMD : Cmd> {
     fun initState(): STATE
     fun update(msg: MSG, prevState: STATE): Pair<STATE, CMD?>
-    fun call(cmd: CMD): Single<MSG> = throw IllegalStateException("call handler not implemented")
+    fun call(cmd: CMD): Single<MSG> = throw IllegalStateException("Call handler not implemented")
     fun subscriptions(): Observable<MSG> = Observable.empty()
 
 

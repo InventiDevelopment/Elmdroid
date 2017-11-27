@@ -38,7 +38,8 @@ class LoginComponent : Component<LoginState, LoginMsg, LoginCmd> {
 fun loginTask(email: String, password: String): Single<LoginMsg> {
     pause(1000)
     UserRepository().setUser(email)
-    return Single.just(LoginSuccess("Mr/Mrs $email"))
+    throw IllegalStateException("LoginSuccess Je to v haji")
+//    return Single.just(LoginSuccess("Mr/Mrs $email"))
 }
 
 // Subscriptions
