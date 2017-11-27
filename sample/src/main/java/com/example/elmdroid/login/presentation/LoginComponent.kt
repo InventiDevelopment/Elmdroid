@@ -19,7 +19,7 @@ class LoginComponent : Component<LoginState, LoginMsg, LoginCmd> {
         is LoginSuccess ->      prevState.copy(loadingVisible = false, msgText = "Login Successful, welcome ${msg.username}", email = "", password = "").updateLogin().withoutCmd()
         is LoggedUserChanged -> prevState.copy(loggedUsername = msg.username).withoutCmd()
         Tick ->                 prevState.copy(loggedTimer = (prevState.loggedTimer + 1)).withoutCmd()
-        is ErrorMsg ->          prevState.copy(loadingVisible = false, msgText = "Login Failed: ${msg.error.message}").withoutCmd()
+//        is ErrorMsg ->          prevState.copy(loadingVisible = false, msgText = "Login Failed: ${msg.error.message}").withoutCmd()
     }
 
     override fun call(cmd: LoginCmd): Single<LoginMsg> = when(cmd) {
@@ -28,7 +28,7 @@ class LoginComponent : Component<LoginState, LoginMsg, LoginCmd> {
 
     override fun subscriptions(): Observable<LoginMsg> = Observable.merge(userSubscription(), counterSubscription())
 
-    override fun onError(error: Throwable): LoginMsg = ErrorMsg(error)
+//    override fun onError(error: Throwable): LoginMsg = ErrorMsg(error)
 
     private fun LoginState.updateLogin() = this.copy(loginEnabled = (email.isNotBlank() && password.isNotBlank()))
 }
@@ -38,8 +38,7 @@ class LoginComponent : Component<LoginState, LoginMsg, LoginCmd> {
 fun loginTask(email: String, password: String): Single<LoginMsg> {
     pause(1000)
     UserRepository().setUser(email)
-    throw IllegalStateException("LoginSuccess Je to v haji")
-//    return Single.just(LoginSuccess("Mr/Mrs $email"))
+    return Single.just(LoginSuccess("Mr/Mrs $email"))
 }
 
 // Subscriptions
@@ -66,7 +65,7 @@ data class LoginState(
 sealed class LoginMsg : Msg
 data class EmailChanged(val email: String): LoginMsg()
 data class PasswordChanged(val password: String): LoginMsg()
-data class ErrorMsg(val error: Throwable) : LoginMsg()
+//data class ErrorMsg(val error: Throwable) : LoginMsg()
 data class LoginSuccess(val username: String) : LoginMsg()
 data class LoggedUserChanged(val username: String) : LoginMsg()
 object Tick : LoginMsg()

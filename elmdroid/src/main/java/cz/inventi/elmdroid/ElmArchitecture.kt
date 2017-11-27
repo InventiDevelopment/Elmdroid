@@ -20,7 +20,7 @@ interface Component<STATE : State, MSG : Msg, CMD : Cmd> {
     /**
      * Define how to handle errors emitted by tasks
      */
-    fun onError(error: Throwable): MSG = throw error
+//    fun onError(error: Throwable): MSG = throw error
 
     fun STATE.withoutCmd() = this to null
     infix fun STATE.withCmd(cmd : CMD) = this to cmd

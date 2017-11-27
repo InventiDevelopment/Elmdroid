@@ -30,6 +30,7 @@ class ElmController<STATE : State, in MSG : Msg, CMD : Cmd> (component: Componen
 
         compositeDisposable.add(
             msgRelay.zipWith(stateRelay)
+                .doOnNext { (msg, prevState) -> Timber.d("now msg: %s and state: %s", msg, prevState) }
                 .map { (msg, prevState) -> component.update(msg, prevState) }
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -37,15 +38,14 @@ class ElmController<STATE : State, in MSG : Msg, CMD : Cmd> (component: Componen
                 .filter{ (_, maybeCmd) -> maybeCmd != null }
                 .map { (_, cmd) -> cmd }
                 .observeOn(Schedulers.newThread())
-                .flatMap { cmd -> processCmd(cmd, component)}
-                .onErrorResumeNext { error: Throwable -> Observable.just(component.onError(error)) }
+                .flatMap { cmd -> component.call(cmd).toObservable()}
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe{ msg -> dispatch(msg) }
         )
 
         compositeDisposable.add(
             component.subscriptions()
-                .onErrorResumeNext { error: Throwable -> Observable.just(component.onError(error)) }
+//                .onErrorResumeNext { error: Throwable -> Observable.just(component.onError(error)) } // this stops subscriptions
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { msg -> dispatch(msg) }
@@ -67,13 +67,14 @@ class ElmController<STATE : State, in MSG : Msg, CMD : Cmd> (component: Componen
         Timber.d("State updated to: %s", stateVal)
     }
 
-    private fun processCmd(cmd: CMD, component: Component<STATE, MSG, CMD>): Observable<MSG>? {
-        Timber.d("Call cmd: %s", cmd)
-        return component.call(cmd)
-//                .onErrorResumeNext { error ->
-//                    Timber.d("Error %s after cmd %s", error, cmd)
-//                    Single.just(component.onError(error))
+    // TODO think again about error handling and if it make's sense to use on error functionality this way, maybe those errors should be fatal
+//    private fun processCmd(cmd: CMD, component: Component<STATE, MSG, CMD>): Observable<MSG>? {
+//        Timber.d("Call cmd: %s", cmd)
+//        return component.call(cmd)
+//                // TODO related discussion https://github.com/ReactiveX/RxJava/issues/3870
+//                .onErrorReturn { error ->
+//                    component.onError(error)
 //                }
-                .toObservable()
-    }
+//                .toObservable()
+//    }
 }
