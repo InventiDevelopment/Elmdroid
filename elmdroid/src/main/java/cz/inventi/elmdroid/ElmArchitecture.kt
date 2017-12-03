@@ -4,7 +4,7 @@ import android.arch.lifecycle.LiveData
 import io.reactivex.Observable
 import io.reactivex.Single
 
-interface ComponentController<STATE : State, in MSG : Msg> {
+interface ComponentRuntime<STATE : State, in MSG : Msg> {
     fun state(): LiveData<STATE>
     fun dispatch(msg: MSG)
     fun clear()
