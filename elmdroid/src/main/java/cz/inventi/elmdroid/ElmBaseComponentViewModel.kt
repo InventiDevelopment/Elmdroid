@@ -8,9 +8,9 @@ import android.arch.lifecycle.ViewModel
  */
 abstract class ElmBaseComponentViewModel <STATE : State, MSG : Msg, CMD : Cmd> : ViewModel(),
         Component<STATE, MSG, CMD>,
-        ComponentController<STATE, MSG> {
+        ComponentRuntime<STATE, MSG> {
 
-    private val controller = ElmController(this)
+    private val controller = ElmRuntime(this)
 
     override fun state(): LiveData<STATE> = controller.state()
 

@@ -7,7 +7,7 @@ import android.arch.lifecycle.ViewModel
  */
 open class ElmComponentViewModel <STATE : State, in MSG : Msg, CMD : Cmd> (component: Component<STATE, MSG, CMD>) :
         ViewModel(),
-        ComponentController<STATE, MSG> by ElmController<STATE, MSG, CMD>(component) {
+        ComponentRuntime<STATE, MSG> by ElmRuntime<STATE, MSG, CMD>(component) {
 
     override fun onCleared() {
         super.onCleared()

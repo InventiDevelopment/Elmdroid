@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.widget.Toast
 import com.example.elmdroid.R
 import com.example.elmdroid.common.setOnTextChangeListener
-import cz.inventi.elmdroid.ElmController
 import kotlinx.android.synthetic.main.activity_login.*
 import android.arch.lifecycle.ViewModelProviders
 
