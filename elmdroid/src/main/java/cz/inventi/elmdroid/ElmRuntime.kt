@@ -24,8 +24,11 @@ class ElmRuntime<STATE : State, in MSG : Msg, CMD : Cmd> (component: Component<S
     init {
         updateStateValue(component.initState())
 
+        val sharedStateRelay = stateRelay.publish()
+                .autoConnect(component.subscriptions().filter { it is StatefulSub<STATE, MSG> }.size + 1)
+
         compositeDisposable.add(
-            msgRelay.zipWith(stateRelay)
+            msgRelay.zipWith(sharedStateRelay)
                 .doOnNext { (msg, prevState) -> Timber.d("now msg: %s and state: %s", msg, prevState) }
                 .map { (msg, prevState) -> component.update(msg, prevState) }
                 .subscribeOn(Schedulers.newThread())
@@ -39,12 +42,24 @@ class ElmRuntime<STATE : State, in MSG : Msg, CMD : Cmd> (component: Component<S
                 .subscribe{ msg -> dispatch(msg) }
         )
 
-        compositeDisposable.add(
-            component.subscriptions()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { msg -> dispatch(msg) }
-        )
+        component.subscriptions().forEach { sub ->
+
+            val subObs = when (sub) {
+                is StatelessSub<STATE, MSG> -> sub()
+                is StatefulSub<STATE, MSG> -> {
+                    sharedStateRelay
+                            .distinctUntilChanged { s1, s2 -> !sub.isDistinct(s1, s2) }
+                            .switchMap { state -> sub(state) }
+                }
+            }
+
+            compositeDisposable.add(
+                subObs
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { msg -> dispatch(msg) }
+            )
+        }
     }
 
     override fun state(): LiveData<STATE> = state
