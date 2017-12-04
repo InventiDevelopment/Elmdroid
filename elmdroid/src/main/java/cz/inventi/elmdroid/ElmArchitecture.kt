@@ -16,13 +16,8 @@ interface Component<STATE : State, MSG : Msg, CMD : Cmd> {
     fun call(cmd: CMD): Single<MSG> = throw IllegalStateException("Call handler not implemented")
     fun subscriptions(): Observable<MSG> = Observable.empty()
 
-
-    /**
-     * Define how to handle errors emitted by tasks
-     */
-//    fun onError(error: Throwable): MSG = throw error
-
-    fun STATE.withoutCmd() = this to null
+    // small readability enhancement
+    fun STATE.noCmd() = this to null
     infix fun STATE.withCmd(cmd : CMD) = this to cmd
 }
 

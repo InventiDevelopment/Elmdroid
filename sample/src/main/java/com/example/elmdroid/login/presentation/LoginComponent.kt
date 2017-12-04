@@ -13,13 +13,13 @@ class LoginComponent : Component<LoginState, LoginMsg, LoginCmd> {
     override fun initState(): LoginState = LoginState("", "", false, false, "", "", 0)
 
     override fun update(msg: LoginMsg, prevState: LoginState): Pair<LoginState, LoginCmd?> = when(msg) {
-        is EmailChanged ->      prevState.copy(email = msg.email, msgText = "").updateLogin().withoutCmd()
-        is PasswordChanged ->   prevState.copy(password = msg.password, msgText = "").updateLogin().withoutCmd()
+        is EmailChanged ->      prevState.copy(email = msg.email, msgText = "").updateLogin().noCmd()
+        is PasswordChanged ->   prevState.copy(password = msg.password, msgText = "").updateLogin().noCmd()
         is LoginClicked ->      prevState.copy(loadingVisible = true, loginEnabled = false, msgText = "") withCmd LoginAction(prevState.email, prevState.password)
-        is LoginSuccess ->      prevState.copy(loadingVisible = false, msgText = "Login Successful, welcome ${msg.username}", email = "", password = "").updateLogin().withoutCmd()
-        is LoggedUserChanged -> prevState.copy(loggedUsername = msg.username).withoutCmd()
-        Tick ->                 prevState.copy(loggedTimer = (prevState.loggedTimer + 1)).withoutCmd()
-//        is ErrorMsg ->          prevState.copy(loadingVisible = false, msgText = "Login Failed: ${msg.error.message}").withoutCmd()
+        is LoginSuccess ->      prevState.copy(loadingVisible = false, msgText = "Login Successful, welcome ${msg.username}", email = "", password = "").updateLogin().noCmd()
+        is LoggedUserChanged -> prevState.copy(loggedUsername = msg.username).noCmd()
+        Tick ->                 prevState.copy(loggedTimer = (prevState.loggedTimer + 1)).noCmd()
+//        is ErrorMsg ->          prevState.copy(loadingVisible = false, msgText = "Login Failed: ${msg.error.message}").noCmd()
     }
 
     override fun call(cmd: LoginCmd): Single<LoginMsg> = when(cmd) {
