@@ -10,11 +10,11 @@ abstract class ElmBaseComponentViewModel <STATE : State, MSG : Msg, CMD : Cmd> :
         Component<STATE, MSG, CMD>,
         ComponentRuntime<STATE, MSG> {
 
-    private val controller = ElmRuntime(this)
+    private val runtime = ElmRuntime(this)
 
-    override fun state(): LiveData<STATE> = controller.state()
+    override fun state(): LiveData<STATE> = runtime.state()
 
-    override fun dispatch(msg: MSG) = controller.dispatch(msg)
+    override fun dispatch(msg: MSG) = runtime.dispatch(msg)
 
-    override fun clear() = controller.clear()
+    override fun clear() = runtime.clear()
 }
