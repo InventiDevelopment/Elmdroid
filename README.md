@@ -7,15 +7,24 @@ from [android architecture components][arch] and `RxJava`.
 
 Basic concepts
 --------------
-Basically only thing you have to implement is interface `Component<STATE : State, MSG : Msg, CMD : Cmd>`
+Basically only thing you have to implement is interface `Component<STATE : State, MSG : Msg, CMD : Cmd>` which
+is then wrapped inside it's runtime:
 
 ![Runtime vs UI](readme-assets/runtime-vs-ui.png)
 
-Component is than wrapped inside it's runtime. Runtime just receives messages from UI and translates them in to
-the from of new states. UI then simply observes state `LiveData<State>` and renders the changes.
+Runtime just receives messages from UI and translates them in to the from of new states,
+using `Component.update(..)` function.
+UI then simply observes state `LiveData<State>` and renders the changes.
+
+This is where your component fits in to the library, now let's have a look what is inside component
+and how tu actually implement it.
 
 Usage
 -----
+
+Let's say we want to implement simple screen with two buttons for increment and decrement and plain `TextView`
+to keep track of the "score". You can find this example as Elm web app [here][elm-simple-example]
+
 
 
 Download
@@ -48,3 +57,4 @@ License
 
 [tea]: https://guide.elm-lang.org/architecture/
 [arch]: https://developer.android.com/topic/libraries/architecture/index.html
+[elm-simple-example]: http://elm-lang.org/examples/buttons
