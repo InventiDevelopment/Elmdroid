@@ -6,7 +6,7 @@ import android.arch.lifecycle.ViewModel
 /**
  * Created by Tomas Valenta on 26.11.2017.
  */
-abstract class ElmBaseComponentViewModel <STATE : State, MSG : Msg, CMD : Cmd> : ViewModel(),
+abstract class ElmBaseViewModel<STATE : State, MSG : Msg, CMD : Cmd> : ViewModel(),
         Component<STATE, MSG, CMD>,
         ComponentRuntime<STATE, MSG> {
 
