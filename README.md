@@ -102,7 +102,7 @@ or `ElmBaseViewModel` and implement your component logic right in it's subclass.
 Eather way, your component will survive configuration change inside it's `ViewModel` a the `clear()`
 will be called in `ViewModel.onCleared()` for you.
 
-You can check the whole counter example in [samples][counter-sample]
+You can check the whole counter sample in [samples][counter-sample]
 
 ### Commands and Subscriptions
 
