@@ -20,6 +20,8 @@ and how tu actually implement it.
 
 ## Usage
 
+### Basic synchronous example
+
 Let's say we want to implement simple screen with two buttons for increment and decrement and plain `TextView`
 to keep track of the "score". You can find this example in [official elm examples][elm-simple-example]
 
@@ -59,8 +61,52 @@ the original state before any `Msg` arrives.
 With prepared component, we can simply use it in our activity:
 
 ```kotlin
+class CounterActivity : AppCompatActivity() {
 
+    private lateinit var runtime: ElmRuntime<CounterState, CounterMsg, CounterCmd>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_counter)
+        supportActionBar?.title = getString(R.string.basic_counter)
+
+        runtime = ElmRuntime(CounterComponent())
+
+        runtime.state().observe(this, Observer {
+            it?.let { counter.text = "${it.counter}" }
+        })
+
+        increment.setOnClickListener { runtime.dispatch(Increment) }
+        decrement.setOnClickListener { runtime.dispatch(Decrement) }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        runtime.clear()
+    }
+}
 ```
+
+We need to wrap our component in `ElmRuntime` which gives use ability to observe current state as `LiveData`
+and to dispatch messages, in this case `Increment` and `Decrement`. Also make sure you  call `clear()`
+on runtime in `onDestroy()` to prevent memory leaks.
+
+If you want your component to survive configuration change you have to handle it yourself or you can use
+`ElmViewModel` and pass in your component
+
+```groovy
+ ElmComponentViewModel<LoginState, LoginMsg, LoginCmd>(LoginComponent())
+```
+
+or `ElmBaseViewModel` and implement your component logic right in it's subclass.
+Eather way, your component will survive configuration change inside it's `ViewModel` a the `clear()`
+will be called in `ViewModel.onCleared()` for you.
+
+You can check the whole counter example in [samples][counter-sample]
+
+### Commands and Subscriptions
+
+TODO
 
 ## Download
 
@@ -91,3 +137,4 @@ compile 'TODO'
 [tea]: https://guide.elm-lang.org/architecture/
 [arch]: https://developer.android.com/topic/libraries/architecture/index.html
 [elm-simple-example]: http://elm-lang.org/examples/buttons
+[counter-sample]: https://github.com/InventiDevelopment/Elmdroid/tree/dev/sample/src/main/java/com/example/elmdroid/counter
