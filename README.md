@@ -95,7 +95,7 @@ If you want your component to survive configuration change you have to handle it
 `ElmViewModel` and pass in your component
 
 ```groovy
- ElmComponentViewModel<LoginState, LoginMsg, LoginCmd>(LoginComponent())
+class CounterViewModel : ElmComponentViewModel<CounterState, CounterMsg, CounterCmd>(CounterComponent())
 ```
 
 or `ElmBaseViewModel` and implement your component logic right in it's subclass.
