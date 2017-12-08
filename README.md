@@ -106,7 +106,9 @@ You can check the whole counter sample in [samples][counter-sample]
 
 ### Commands and Subscriptions
 
-TODO
+If you want to perform an asynchronous action you have two options: start one time async task
+with a `Cmd` that returns a single result `Msg` back to your update function or you can set up
+a `Subscription` and listen continuous stream of messages.
 
 ## Download
 
