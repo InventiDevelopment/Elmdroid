@@ -94,7 +94,7 @@ on runtime in `onDestroy()` to prevent memory leaks.
 If you want your component to survive configuration change you have to handle it yourself or you can use
 `ElmViewModel` and pass in your component
 
-```groovy
+```kotlin
 class CounterViewModel : ElmComponentViewModel<CounterState, CounterMsg, CounterCmd>(CounterComponent())
 ```
 
@@ -109,6 +109,87 @@ You can check the whole counter sample in [samples][counter-sample]
 If you want to perform an asynchronous action you have two options: start one time async task
 with a `Cmd` that returns a single result `Msg` back to your update function or you can set up
 a `Subscription` and listen continuous stream of messages.
+
+#### Commands
+
+All commands starts tasks. Task is simple function that returns RxJava `Single<Msg>`, for example this login Task:
+```kotlin
+fun loginTask(email: String, password: String): Single<LoginMsg> {
+    val repo = UserRepository()
+    repo.loginUser(email, password)
+    return Single.just(repo.getUser())
+}
+```
+
+To start this task your update function needs to return some `Cmd`
+
+```kotlin
+override fun update(msg: LoginMsg, prevState: LoginState): Pair<LoginState, LoginCmd?> = when(msg) {
+        is LoginClicked ->      prevState.copy(loadingVisible = true, loginEnabled = false, msgText = "") withCmd LoginAction(prevState.email, prevState.password)
+        is LoginSuccess ->      prevState.copy(loadingVisible = false, msgText = "Login Successful, welcome ${msg.username}", email = "", password = "").updateLogin().noCmd()
+}
+```
+
+After `LoginClicked` message arrives we return state with `loading = true` and we also use `withCmd` to return
+`LoginAction` `Cmd` with it. This is the way to specify immediate state change and async action that should
+fallow. We need to define the last missing peace, the `call()` function thant defines which `Cmd` starts which
+Task.
+
+```kotlin
+override fun call(cmd: LoginCmd): Single<LoginMsg> = when(cmd) {
+        is LoginAction -> loginTask(cmd.email, cmd.password)
+}
+```
+
+`call()` function is optional part of component that you need to define if you want to return any `Cmd` from
+the `update()` function. Our `loginTask` returns `LoginSuccess` and this message is run through the `update()`
+function again to finally display some logged in state.
+
+#### Subscriptions
+
+You can define two types of subscriptions
+1. `StatelessSub` - Simply starts during `ComponentRuntime` creation and ends when `ComponentRuntime` is cleared.
+it is not effected by any state changes.
+2. `StatefulSub` - It has the same lifetime but it's is given the opportunity to change anytime state is changed.
+It can even define it's own filter policy, so it can be interested only in some particular changes in state.
+
+Example of Stateless subscription could be this LoginSubscription that notifies update function with a new
+message anytime logged user changed. It takes the information about the logged user from the repository not
+form the current view state and that's why it's `Stateless` it has no interest in state and it's not
+influenced by it in any way. Here is how this subscription might look like:
+
+```kotlin
+class UserSubscription : StatelessSub<LoginState, LoginMsg>() {
+    override fun invoke(): Observable<LoginMsg> = UserRepository().getUser().map {
+        LoggedUserChanged(it.username)
+    }
+}
+```
+
+It is simply an object that extends `StatelessSub` and overrides `invoke()` function that returns stream of
+messages represented in a form of Observable.
+
+Now let's say we want a similar sub that would emmit `Tick` event every second after some user is logged in.
+This subscription will take choose the view state object as it's source of truth about the logged in user and
+that's why we call it `Stateful`
+
+```kotlin
+class CounterSubscription : StatefulSub<LoginState, LoginMsg>() {
+    override fun invoke(state: LoginState): Observable<LoginMsg> = when {
+        state.loggedUsername.isNotBlank() -> Observable.interval(1, TimeUnit.SECONDS).map { Tick }
+        else -> Observable.empty()
+    }
+    override fun isDistinct(s1: LoginState, s2: LoginState) = s1.loggedUsername != s2.loggedUsername
+}
+```
+
+As you can see, the super class is now called `StatefulSub` but also the `invoke(state)` function now takes
+state as a parameter so your stream of data will be restarted every time new state comes out. The last question
+is what does the 'new' mean exactly. If you don't override `isDistinct` it uses the default implementation
+that filters only the states that are equal (using `equals()` method) to the previous state or you can override it
+and choose your own rules for equality. As you can see in this example, we are only interested in new view states
+if the have different loggedUsername then the previous state.
+
 
 ## Download
 
