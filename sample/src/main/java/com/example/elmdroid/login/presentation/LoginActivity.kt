@@ -5,12 +5,12 @@ import android.os.Bundle
 import android.widget.Toast
 import com.example.elmdroid.R
 import com.example.elmdroid.common.setOnTextChangeListener
-import cz.inventi.elmdroid.ElmController
+import cz.inventi.elmdroid.ElmRuntime
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity(), LoginView  {
 
-    private lateinit var controller: ElmController<LoginState, LoginMsg, LoginCmd>
+    private lateinit var runtime: ElmRuntime<LoginState, LoginMsg, LoginCmd>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,20 +18,20 @@ class LoginActivity : AppCompatActivity(), LoginView  {
 
         supportActionBar?.title = getString(R.string.complex_login)
 
-        controller = ElmController(LoginComponent())
+        runtime = ElmRuntime(LoginComponent())
 
         // observe state
-        controller.state().observe(this, LoginRenderer(this))
+        runtime.state().observe(this, LoginRenderer(this))
 
         // setup msg dispatching
-        email().setOnTextChangeListener { controller.dispatch(EmailChanged(it)) }
-        password().setOnTextChangeListener { controller.dispatch(PasswordChanged(it)) }
-        loginButton().setOnClickListener { controller.dispatch(LoginClicked) }
+        email().setOnTextChangeListener { runtime.dispatch(EmailChanged(it)) }
+        password().setOnTextChangeListener { runtime.dispatch(PasswordChanged(it)) }
+        loginButton().setOnClickListener { runtime.dispatch(LoginClicked) }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        controller.clear()
+        runtime.clear()
     }
 
     override fun email() = email

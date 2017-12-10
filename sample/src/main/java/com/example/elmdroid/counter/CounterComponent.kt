@@ -9,8 +9,8 @@ class CounterComponent: Component<CounterState, CounterMsg, CounterCmd> {
     override fun initState(): CounterState = CounterState(0)
 
     override fun update(msg: CounterMsg, prevState: CounterState): Pair<CounterState, CounterCmd?> = when(msg){
-        is Increment -> CounterState(prevState.counter + 1).withoutCmd()
-        is Decrement -> CounterState(prevState.counter - 1).withoutCmd()
+        is Increment -> CounterState(prevState.counter + 1).noCmd()
+        is Decrement -> CounterState(prevState.counter - 1).noCmd()
     }
 }
 

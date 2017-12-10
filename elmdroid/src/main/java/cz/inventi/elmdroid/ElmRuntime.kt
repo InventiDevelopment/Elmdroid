@@ -3,20 +3,16 @@ package cz.inventi.elmdroid
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.jakewharton.rxrelay2.BehaviorRelay
-import io.reactivex.Observable
-import io.reactivex.Observer
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.zipWith
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
 /**
- *  Implementation of ComponentController based on RxJava and RxRelay
+ *  Implementation of ComponentRuntime based on RxJava and RxRelay
  */
-class ElmController<STATE : State, in MSG : Msg, CMD : Cmd> (component: Component<STATE, MSG, CMD>) : ComponentController<STATE, MSG> {
+class ElmRuntime<STATE : State, in MSG : Msg, CMD : Cmd> (component: Component<STATE, MSG, CMD>) : ComponentRuntime<STATE, MSG> {
 
     private val msgRelay: BehaviorRelay<MSG> = BehaviorRelay.create()
     private val stateRelay: BehaviorRelay<STATE> = BehaviorRelay.create()
@@ -28,8 +24,11 @@ class ElmController<STATE : State, in MSG : Msg, CMD : Cmd> (component: Componen
     init {
         updateStateValue(component.initState())
 
+        val sharedStateRelay = stateRelay.publish()
+                .autoConnect(component.subscriptions().filter { it is StatefulSub<STATE, MSG> }.size + 1)
+
         compositeDisposable.add(
-            msgRelay.zipWith(stateRelay)
+            msgRelay.zipWith(sharedStateRelay)
                 .doOnNext { (msg, prevState) -> Timber.d("now msg: %s and state: %s", msg, prevState) }
                 .map { (msg, prevState) -> component.update(msg, prevState) }
                 .subscribeOn(Schedulers.newThread())
@@ -43,13 +42,24 @@ class ElmController<STATE : State, in MSG : Msg, CMD : Cmd> (component: Componen
                 .subscribe{ msg -> dispatch(msg) }
         )
 
-        compositeDisposable.add(
-            component.subscriptions()
-//                .onErrorResumeNext { error: Throwable -> Observable.just(component.onError(error)) } // this stops subscriptions
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { msg -> dispatch(msg) }
-        )
+        component.subscriptions().forEach { sub ->
+
+            val subObs = when (sub) {
+                is StatelessSub<STATE, MSG> -> sub()
+                is StatefulSub<STATE, MSG> -> {
+                    sharedStateRelay
+                            .distinctUntilChanged { s1, s2 -> !sub.isDistinct(s1, s2) }
+                            .switchMap { state -> sub(state) }
+                }
+            }
+
+            compositeDisposable.add(
+                subObs
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { msg -> dispatch(msg) }
+            )
+        }
     }
 
     override fun state(): LiveData<STATE> = state
@@ -66,15 +76,4 @@ class ElmController<STATE : State, in MSG : Msg, CMD : Cmd> (component: Componen
         stateRelay.accept(stateVal)
         Timber.d("State updated to: %s", stateVal)
     }
-
-    // TODO think again about error handling and if it make's sense to use on error functionality this way, maybe those errors should be fatal
-//    private fun processCmd(cmd: CMD, component: Component<STATE, MSG, CMD>): Observable<MSG>? {
-//        Timber.d("Call cmd: %s", cmd)
-//        return component.call(cmd)
-//                // TODO related discussion https://github.com/ReactiveX/RxJava/issues/3870
-//                .onErrorReturn { error ->
-//                    component.onError(error)
-//                }
-//                .toObservable()
-//    }
 }

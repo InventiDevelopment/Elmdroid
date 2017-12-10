@@ -1,10 +1,10 @@
 package com.example.elmdroid.login.presentation
 
-import cz.inventi.elmdroid.ElmComponentViewModel
+import cz.inventi.elmdroid.ElmViewModel
 
 /**
  * Created by tomas.valenta on 11/27/2017.
  */
-class LoginViewModel : ElmComponentViewModel<LoginState, LoginMsg, LoginCmd>(LoginComponent()) {
+class LoginViewModel : ElmViewModel<LoginState, LoginMsg, LoginCmd>(LoginComponent()) {
     // any additional component unrelated code
 }

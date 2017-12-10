@@ -13,22 +13,19 @@ class LoginComponent : Component<LoginState, LoginMsg, LoginCmd> {
     override fun initState(): LoginState = LoginState("", "", false, false, "", "", 0)
 
     override fun update(msg: LoginMsg, prevState: LoginState): Pair<LoginState, LoginCmd?> = when(msg) {
-        is EmailChanged ->      prevState.copy(email = msg.email, msgText = "").updateLogin().withoutCmd()
-        is PasswordChanged ->   prevState.copy(password = msg.password, msgText = "").updateLogin().withoutCmd()
+        is EmailChanged ->      prevState.copy(email = msg.email, msgText = "").updateLogin().noCmd()
+        is PasswordChanged ->   prevState.copy(password = msg.password, msgText = "").updateLogin().noCmd()
         is LoginClicked ->      prevState.copy(loadingVisible = true, loginEnabled = false, msgText = "") withCmd LoginAction(prevState.email, prevState.password)
-        is LoginSuccess ->      prevState.copy(loadingVisible = false, msgText = "Login Successful, welcome ${msg.username}", email = "", password = "").updateLogin().withoutCmd()
-        is LoggedUserChanged -> prevState.copy(loggedUsername = msg.username).withoutCmd()
-        Tick ->                 prevState.copy(loggedTimer = (prevState.loggedTimer + 1)).withoutCmd()
-//        is ErrorMsg ->          prevState.copy(loadingVisible = false, msgText = "Login Failed: ${msg.error.message}").withoutCmd()
+        is LoginSuccess ->      prevState.copy(loadingVisible = false, msgText = "Login Successful, welcome ${msg.username}", email = "", password = "").updateLogin().noCmd()
+        is LoggedUserChanged -> prevState.copy(loggedUsername = msg.username, loggedTimer = 0).noCmd()
+        Tick ->                 prevState.copy(loggedTimer = (prevState.loggedTimer + 1)).noCmd()
     }
 
     override fun call(cmd: LoginCmd): Single<LoginMsg> = when(cmd) {
         is LoginAction -> loginTask(cmd.email, cmd.password)
     }
 
-    override fun subscriptions(): Observable<LoginMsg> = Observable.merge(userSubscription(), counterSubscription())
-
-//    override fun onError(error: Throwable): LoginMsg = ErrorMsg(error)
+    override fun subscriptions(): List<Sub<LoginState, LoginMsg>> = listOf(UserSubscription(), CounterSubscription())
 
     private fun LoginState.updateLogin() = this.copy(loginEnabled = (email.isNotBlank() && password.isNotBlank()))
 }
@@ -42,12 +39,20 @@ fun loginTask(email: String, password: String): Single<LoginMsg> {
 }
 
 // Subscriptions
-fun userSubscription(): Observable<LoginMsg> = UserRepository().getUser().map {
-    pause(2000)
-    LoggedUserChanged(it.username)
+class UserSubscription : StatelessSub<LoginState, LoginMsg>() {
+    override fun invoke(): Observable<LoginMsg> = UserRepository().getUser().map {
+        pause(2000)
+        LoggedUserChanged(it.username)
+    }
 }
 
-fun counterSubscription(): Observable<LoginMsg> = Observable.interval(1, TimeUnit.SECONDS).map { Tick }
+class CounterSubscription : StatefulSub<LoginState, LoginMsg>() {
+    override fun invoke(state: LoginState): Observable<LoginMsg> = when {
+        state.loggedUsername.isNotBlank() -> Observable.interval(1, TimeUnit.SECONDS).map { Tick }
+        else -> Observable.empty()
+    }
+    override fun isDistinct(s1: LoginState, s2: LoginState) = s1.loggedUsername != s2.loggedUsername
+}
 
 
 // State
