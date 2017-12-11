@@ -1,32 +1,32 @@
 # Elmdroid
 
-This library helps you implement [The Elm Architecture][tea] on Android. This well known unidirectional architecture
+This library helps you implement [The Elm Architecture(TEA)][tea] on Android. This well known unidirectional architecture
 is incredibly easy to use but not so simple to set up - hence the reason to create this library. To make
-things even simpler, we added integration with `LiveData` and optionally for `ViewModel`
+things even simpler, we added integration with `LiveData` and optionally also for `ViewModel`
 from [android architecture components][arch] and `RxJava`.
 
 ## Basic concepts
-Basically only thing you have to implement is interface `Component<STATE : State, MSG : Msg, CMD : Cmd>` which
-is then wrapped inside it's runtime:
+This is not an introduction guide to [TEA][tea], if you are not familiar with it or with similar unidirectional
+architectures we strongly recommend to read the [TEA docs][tea].
+
+Basically the only thing you have to implement is interface `Component<STATE : State, MSG : Msg, CMD : Cmd>` which
+is then wrapped inside it's runtime. You can see how your component fits in the rest of the app on the picture below:
 
 ![Runtime vs UI](readme-assets/runtime-vs-ui.png)
 
-Runtime just receives messages from UI and translates them in to the from of new states,
+`ComponentRuntime` just receives messages from UI and translates them into the from of new states,
 using `Component.update(..)` function.
 UI then simply observes state `LiveData<State>` and renders the changes.
-
-This is where your component fits in to the library, now let's have a look what is inside component
-and how tu actually implement it.
 
 ## Usage
 
 ### Basic synchronous example
 
 Let's say we want to implement simple screen with two buttons for increment and decrement and plain `TextView`
-to keep track of the "score". You can find this example in [official elm examples][elm-simple-example]
+to keep track of the current "score". You can find this example in [official elm examples][elm-simple-example]
 
-First we have to define state, a data class holding information about the state of the screen. In this case
-the only thing that can change is the current counter "score":
+First we have to define state. That can be simply represented as an Kotlin data class. There is nothing interesting about it,
+it just holds the current "score" of the counter:
 
 ```kotlin
 data class CounterState(val counter: Int) : State
@@ -54,11 +54,11 @@ class CounterComponent: Component<CounterState, CounterMsg, CounterCmd> {
 }
 ```
 
-Ignore all the `Cmd` parts for now and have a look at the `update(msg, prevState)` function. It takes incoming
+Ignore all the `Cmd` parts for now and look at the `update(msg, prevState)` function. It takes incoming
 message with previous state and defines a new state to render. `initState()` simply defines what should be
 the original state before any `Msg` arrives.
 
-With prepared component, we can simply use it in our activity:
+With prepared component, we can simply use it in our activity or fragment:
 
 ```kotlin
 class CounterActivity : AppCompatActivity() {
@@ -87,8 +87,8 @@ class CounterActivity : AppCompatActivity() {
 }
 ```
 
-We need to wrap our component in `ElmRuntime` which gives use ability to observe current state as `LiveData`
-and to dispatch messages, in this case `Increment` and `Decrement`. Also make sure you  call `clear()`
+We need to wrap our component in `ElmRuntime` which gives you ability to observe current state as `LiveData`
+and to dispatch `Increment` and `Decrement` messages. Make sure you call `clear()`
 on runtime in `onDestroy()` to prevent memory leaks.
 
 If you want your component to survive configuration change you have to handle it yourself or you can use
@@ -98,8 +98,8 @@ If you want your component to survive configuration change you have to handle it
 class CounterViewModel : ElmComponentViewModel<CounterState, CounterMsg, CounterCmd>(CounterComponent())
 ```
 
-or `ElmBaseViewModel` and implement your component logic right in it's subclass.
-Eather way, your component will survive configuration change inside it's `ViewModel` a the `clear()`
+or extend `ElmBaseViewModel` and implement your component logic right in it's subclass.
+Either way, your component will survive configuration change inside it's `ViewModel` a the `ElmRuntime.clear()`
 will be called in `ViewModel.onCleared()` for you.
 
 You can check the whole counter sample in [samples][counter-sample]
@@ -188,7 +188,7 @@ state as a parameter so your stream of data will be restarted every time new sta
 is what does the 'new' mean exactly. If you don't override `isDistinct` it uses the default implementation
 that filters only the states that are equal (using `equals()` method) to the previous state or you can override it
 and choose your own rules for equality. As you can see in this example, we are only interested in new view states
-if the have different loggedUsername then the previous state.
+if they have different loggedUsername than the previous state.
 
 
 ## Download
