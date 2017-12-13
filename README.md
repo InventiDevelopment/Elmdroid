@@ -1,16 +1,15 @@
 # Elmdroid
 
 This library helps you implement [The Elm Architecture(TEA)][tea] on Android. This well known unidirectional architecture
-is incredibly easy to use but not so simple to set up - hence the reason to create this library. To make
-things even simpler, we added integration with `LiveData` and optionally also for `ViewModel`
-from [android architecture components][arch] and `RxJava`.
+is incredibly easy to use but not so simple to set up and that's why we created this library. To make things even simpler,
+we added integration with `RxJava`, `LiveData`, and optionally also `ViewModel`.
 
 ## Basic concepts
 This is not an introduction guide to [TEA][tea], if you are not familiar with it or with similar unidirectional
 architectures we strongly recommend to read the [TEA docs][tea].
 
 Basically the only thing you have to implement is interface `Component<STATE : State, MSG : Msg, CMD : Cmd>` which
-is then wrapped inside it's runtime. You can see how your component fits in the rest of the app on the picture below:
+is then wrapped inside `ComponentRuntime`. Look at the picture below to see how is your component integrated with rest of the app:
 
 ![Runtime vs UI](readme-assets/runtime-vs-ui.png)
 
@@ -22,17 +21,17 @@ UI then simply observes state `LiveData<State>` and renders the changes.
 
 ### Basic synchronous example
 
-Let's say we want to implement simple screen with two buttons for increment and decrement and plain `TextView`
-to keep track of the current "score". You can find this example in [official elm examples][elm-simple-example]
+Let's say we want to implement simple screen with two buttons for increment/decrement actions and plain `TextView`
+to keep track of current "score". You can find this example in [official elm examples][elm-simple-example]
 
 First we have to define state. That can be simply represented as an Kotlin data class. There is nothing interesting about it,
-it just holds the current "score" of the counter:
+it just holds the current "score" for our counter:
 
 ```kotlin
 data class CounterState(val counter: Int) : State
 ```
 
-Now let's define messages(Msg). You can thing about it as defining all the possible events that can
+Now let's define messages(Msg). You can think about it as defining all the possible events that can
 happen on a screen:
 
 ```kotlin
@@ -41,7 +40,7 @@ object Increment : CounterMsg()
 object Decrement : CounterMsg()
 ```
 
-Now when we defined all the basic peaces, we can put everything together in `CounterComponent`
+Now when we have all the basic building blocks defined, we can put everything together in `CounterComponent`:
 
 ```kotlin
 class CounterComponent: Component<CounterState, CounterMsg, CounterCmd> {
@@ -191,6 +190,8 @@ and choose your own rules for equality. As you can see in this example, we are o
 if they have different loggedUsername than the previous state.
 
 
+Check out [samples][samples] to explore even more complex solutions.
+
 ## Download
 
 ```groovy
@@ -221,3 +222,4 @@ compile 'TODO'
 [arch]: https://developer.android.com/topic/libraries/architecture/index.html
 [elm-simple-example]: http://elm-lang.org/examples/buttons
 [counter-sample]: https://github.com/InventiDevelopment/Elmdroid/tree/dev/sample/src/main/java/com/example/elmdroid/counter
+[samples]: https://github.com/InventiDevelopment/Elmdroid/tree/master/sample/src/main/java/com/example/elmdroid
