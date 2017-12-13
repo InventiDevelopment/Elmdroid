@@ -21,6 +21,12 @@ interface Component<STATE : State, MSG : Msg, CMD : Cmd> {
     infix fun STATE.withCmd(cmd : CMD) = this to cmd
 }
 
+
+interface SimpleComponent<STATE : State, MSG : Msg>: Component<STATE, MSG, Nothing> {
+    override fun update(msg: MSG, prevState: STATE): Pair<STATE, Nothing?> = simpleUpdate(msg, prevState).noCmd()
+    fun simpleUpdate(msg: MSG, prevState: STATE): STATE
+}
+
 sealed class Sub<in STATE : State, MSG : Msg>
 
 abstract class StatelessSub<in STATE : State, MSG : Msg>: Sub <STATE, MSG>() {
