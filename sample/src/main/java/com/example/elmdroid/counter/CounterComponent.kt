@@ -1,16 +1,13 @@
 package com.example.elmdroid.counter
 
-import cz.inventi.elmdroid.Cmd
-import cz.inventi.elmdroid.Component
-import cz.inventi.elmdroid.Msg
-import cz.inventi.elmdroid.State
+import cz.inventi.elmdroid.*
 
-class CounterComponent: Component<CounterState, CounterMsg, CounterCmd> {
+class CounterComponent: SimpleComponent<CounterState, CounterMsg> {
     override fun initState(): CounterState = CounterState(0)
 
-    override fun update(msg: CounterMsg, prevState: CounterState): Pair<CounterState, CounterCmd?> = when(msg){
-        is Increment -> CounterState(prevState.counter + 1).noCmd()
-        is Decrement -> CounterState(prevState.counter - 1).noCmd()
+    override fun simpleUpdate(msg: CounterMsg, prevState: CounterState): CounterState = when(msg){
+        is Increment -> CounterState(prevState.counter + 1)
+        is Decrement -> CounterState(prevState.counter - 1)
     }
 }
 
@@ -18,4 +15,3 @@ data class CounterState(val counter: Int) : State
 sealed class CounterMsg : Msg
 object Increment : CounterMsg()
 object Decrement : CounterMsg()
-sealed class CounterCmd: Cmd

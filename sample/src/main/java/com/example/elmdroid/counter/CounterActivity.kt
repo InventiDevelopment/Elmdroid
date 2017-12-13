@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.activity_counter.*
 
 class CounterActivity : AppCompatActivity() {
 
-    private lateinit var runtime: ElmRuntime<CounterState, CounterMsg, CounterCmd>
+    private lateinit var runtime: ElmRuntime<CounterState, CounterMsg, Nothing>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -13,12 +13,19 @@ interface ComponentRuntime<STATE : State, in MSG : Msg> {
 interface Component<STATE : State, MSG : Msg, CMD : Cmd> {
     fun initState(): STATE
     fun update(msg: MSG, prevState: STATE): Pair<STATE, CMD?>
-    fun call(cmd: CMD): Single<MSG> = throw IllegalStateException("Call handler not implemented")
+    fun call(cmd: CMD): Single<MSG>
     fun subscriptions(): List<Sub<STATE, MSG>> = listOf()
 
     // small readability enhancement
     fun STATE.noCmd() = this to null
     infix fun STATE.withCmd(cmd : CMD) = this to cmd
+}
+
+
+interface SimpleComponent<STATE : State, MSG : Msg>: Component<STATE, MSG, Nothing> {
+    override fun update(msg: MSG, prevState: STATE): Pair<STATE, Nothing?> = simpleUpdate(msg, prevState).noCmd()
+    override fun call(cmd: Nothing): Single<MSG> = throw IllegalStateException("Call handler not implemented")
+    fun simpleUpdate(msg: MSG, prevState: STATE): STATE
 }
 
 sealed class Sub<in STATE : State, MSG : Msg>
