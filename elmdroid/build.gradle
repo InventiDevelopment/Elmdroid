@@ -32,4 +32,16 @@ dependencies {
     implementation deps.rx_android
     implementation deps.rx_relay
     implementation deps.rx_kotlin
+
+    // unit testing
+    testImplementation deps.junit
+    testImplementation (deps.arch_core.testing, {
+        exclude group: 'com.android.support', module: 'support-compat'
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.android.support', module: 'support-core-utils'
+    })
+    testImplementation deps.mockito.core
+    testImplementation deps.hamcrest
+    testImplementation deps.kotlin.test
+    testImplementation deps.kotlin.stdlib
 }
