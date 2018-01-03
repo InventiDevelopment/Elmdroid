@@ -44,11 +44,11 @@ class CounterComponentTest {
         verifyStates(runtime, observer,
                 CounterState(0),
                 Increment to CounterState(1),
-                        Decrement to CounterState(0),
-                        Decrement to CounterState(-1),
-                        Decrement to CounterState(-2),
-                        Increment to CounterState(-1),
-                        Increment to CounterState(0)
-                )
+                Decrement to CounterState(0),
+                Decrement to CounterState(-1),
+                Decrement to CounterState(-2),
+                Increment to CounterState(-1),
+                Increment to CounterState(0)
+        )
     }
 }
