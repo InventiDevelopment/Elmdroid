@@ -238,7 +238,7 @@ As you can see there are three different levels of `LogLevel` and the default on
 
 #### Testing
 
-[TEA][tea] is ideal for testing. Check out how we handle testing in [samples-testing][sample testing code].
+[TEA][tea] is ideal for testing. Check out how we handle testing in [sample testing code][samples-testing].
 For example we were able to test counter component like this:
 
 ```kotlin
