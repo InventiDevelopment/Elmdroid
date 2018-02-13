@@ -19,7 +19,7 @@
         </activity>
         <activity android:name=".login.presentation.LoginActivity" />
         <activity android:name=".login.presentation.LoginVMActivity" />
-        <activity android:name=".counter.CounterActivity"></activity>
+        <activity android:name=".counter.CounterActivity" />
     </application>
 
 </manifest>
