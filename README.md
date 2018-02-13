@@ -222,9 +222,38 @@ Check out [samples][samples] to explore even more complex solutions.
 
 #### Logging
 
+You can enable logging individually for every single `ComponentRuntime`
+
+```kotlin
+runtime = RuntimeFactory.create(LoginComponent(), LogLevel.BASIC)
+```
+
+or set it globally via `RuntimeFactory`
+
+```kotlin
+RuntimeFactory.defaultLogLevel = if (BuildConfig.DEBUG)  LogLevel.FULL else LogLevel.NONE
+```
+
+As you can see there are three different levels of `LogLevel` and the default one is set to `LogLevel.NONE`.
 
 #### Testing
 
+[TEA][tea] is ideal for testing. Check out how we handle testing in [samples-testing][sample testing code].
+For example we were able to test counter component like this:
+
+```kotlin
+verifyStates(runtime, observer,
+    CounterState(0),
+    Increment to CounterState(1),
+    Decrement to CounterState(0),
+    Decrement to CounterState(-1),
+    Decrement to CounterState(-2),
+    Increment to CounterState(-1),
+    Increment to CounterState(0)
+)
+ ```
+
+We simply compare messages to the expected result state.
 
 ## Download
 
@@ -275,3 +304,4 @@ jcenter and mavenCentral upload is in progress :)
 [elm-simple-example]: http://elm-lang.org/examples/buttons
 [counter-sample]: https://github.com/InventiDevelopment/Elmdroid/tree/dev/sample/src/main/java/com/example/elmdroid/counter
 [samples]: https://github.com/InventiDevelopment/Elmdroid/tree/master/sample/src/main/java/com/example/elmdroid
+[samples-testing]: https://github.com/InventiDevelopment/Elmdroid/tree/master/sample/src/test/java/com/example/elmdroid
