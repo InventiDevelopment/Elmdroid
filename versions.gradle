@@ -4,8 +4,8 @@
  **/
 ext.deps = [:]
 def versions = [:]
-versions.arch = hasProperty("ARCH_VERSION") ? getProperty("ARCH_VERSION") : "1.0.0-rc1"
-versions.support = "27.0.1"
+versions.arch = hasProperty("ARCH_VERSION") ? getProperty("ARCH_VERSION") : "1.1.0"
+versions.support = "27.0.2"
 versions.junit = "4.12"
 versions.espresso = "3.0.1"
 versions.mockito = "2.7.19"
@@ -15,11 +15,11 @@ versions.constraint_layout = "1.0.2"
 versions.glide = "3.8.0"
 versions.timber = "4.5.1"
 versions.android_gradle_plugin = "3.0.1"
-versions.rxjava2 = "2.1.7"
-versions.rx_android = "2.0.1"
+versions.rxjava2 = "2.1.9"
+versions.rx_android = "2.0.2"
 versions.rx_relay = "2.0.0"
-versions.rx_kotlin = "2.1.0"
-versions.kotlin = "1.2.10"
+versions.rx_kotlin = "2.2.0"
+versions.kotlin = "1.2.21"
 versions.atsl_runner = "1.0.1"
 versions.atsl_rules = "1.0.1"
 versions.hamcrest = "1.3"
@@ -37,9 +37,9 @@ deps.support = support
 
 def lifecycle = [:]
 lifecycle.runtime = "android.arch.lifecycle:runtime:$versions.arch"
-lifecycle.extensions = "android.arch.lifecycle:extensions:$versions.arch"
+lifecycle.viewmodel = "android.arch.lifecycle:viewmodel:$versions.arch"
+lifecycle.livedata = "android.arch.lifecycle:livedata:$versions.arch"
 lifecycle.java8 = "android.arch.lifecycle:common-java8:$versions.arch"
-lifecycle.compiler = "android.arch.lifecycle:compiler:$versions.arch"
 deps.lifecycle = lifecycle
 
 def arch_core = [:]

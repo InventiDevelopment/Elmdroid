@@ -1,13 +1,12 @@
 package com.example.elmdroid.login.presentation
 
-import android.support.v7.app.AppCompatActivity
+import android.arch.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import com.example.elmdroid.R
 import com.example.elmdroid.common.setOnTextChangeListener
 import kotlinx.android.synthetic.main.activity_login.*
-import android.arch.lifecycle.ViewModelProviders
-
 
 
 class LoginVMActivity : AppCompatActivity(), LoginView {
@@ -20,7 +19,7 @@ class LoginVMActivity : AppCompatActivity(), LoginView {
 
         supportActionBar?.title = getString(R.string.complex_login_with_viewmodel)
 
-        viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(application).create(LoginViewModel::class.java)
 
         // observe state
         viewModel.state().observe(this, LoginRenderer(this))

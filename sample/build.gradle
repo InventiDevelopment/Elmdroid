@@ -32,7 +32,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation deps.timber
-    implementation deps.lifecycle.extensions
+    implementation deps.lifecycle.viewmodel
+    implementation deps.lifecycle.livedata
     implementation deps.lifecycle.java8
 
     // rx
@@ -55,24 +56,4 @@ dependencies {
     testImplementation deps.hamcrest
     testImplementation deps.kotlin.test
     testImplementation deps.kotlin.stdlib
-
-    // ui testing
-//    androidTestImplementation deps.support.app_compat
-//    androidTestImplementation deps.support.recyclerview
-//    androidTestImplementation deps.support.cardview
-//    androidTestImplementation deps.support.design
-//
-//    androidTestImplementation(deps.espresso.core, {
-//        exclude group: 'com.android.support', module: 'support-annotations'
-//        exclude group: 'com.google.code.findbugs', module: 'jsr305'
-//    })
-//    androidTestImplementation(deps.espresso.contrib, {
-//        exclude group: 'com.android.support', module: 'support-annotations'
-//        exclude group: 'com.google.code.findbugs', module: 'jsr305'
-//    })
-//
-//    androidTestImplementation(deps.arch_core.testing, {
-//    })
-//    androidTestImplementation deps.dexmaker
-//    androidTestImplementation deps.mockito.core, { exclude group: 'net.bytebuddy' }
 }

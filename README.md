@@ -210,8 +210,11 @@ class CounterSubscription : StatefulSub<LoginState, LoginMsg>() {
 ```
 
 As you can see, the super class is now called `StatefulSub` and the `invoke(state)` function now takes
-state as a parameter, so your stream of data will be restarted every time new state comes out. The the state is considered new if it's not equal (using `equals()` method) to the previous one, if you want to customize this behaviour just override `isDistinct` and choose your own rules for equality. As you can see in this example, we are only interested in new view states
-if they have different loggedUsername than the previous state.
+state as a parameter, so your stream of data will be restarted every time new state comes out.
+The the state is considered new if it's not equal (using `equals()` method) to the previous one,
+if you want to customize this behaviour just override `isDistinct` and choose your own rules for equality.
+As you can see in this example, we are only interested in new view states if they have different loggedUsername than
+the previous state.
 
 
 Check out [samples][samples] to explore even more complex solutions.

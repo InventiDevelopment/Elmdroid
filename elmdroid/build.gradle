@@ -24,8 +24,10 @@ android {
 dependencies {
     implementation deps.kotlin.stdlib
 
+    // arch
     implementation deps.timber
-    implementation deps.lifecycle.extensions
+    implementation deps.lifecycle.viewmodel
+    implementation deps.lifecycle.livedata
 
     // rx
     implementation deps.rx_java2
