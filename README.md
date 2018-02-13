@@ -63,14 +63,14 @@ With prepared component, we can simply use it in our activity or fragment:
 ```kotlin
 class CounterActivity : AppCompatActivity() {
 
-    private lateinit var runtime: ElmRuntime<CounterState, CounterMsg, Nothing>
+    private lateinit var runtime: ComponentRuntime<CounterState, CounterMsg>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_counter)
         supportActionBar?.title = getString(R.string.basic_counter)
 
-        runtime = ElmRuntime(CounterComponent())
+        runtime = RuntimeFactory.create(CounterComponent())
 
         runtime.state().observe(this, Observer {
             it?.let { counter.text = "${it.counter}" }
@@ -87,7 +87,7 @@ class CounterActivity : AppCompatActivity() {
 }
 ```
 
-We need to wrap our component in `ElmRuntime` which gives you ability to observe current state as `LiveData`
+We need to wrap our component in `ComponentRuntime` which gives you ability to observe current state as `LiveData`
 and to dispatch `Increment` and `Decrement` messages. Make sure you call `clear()`
 on runtime in `onDestroy()` to prevent memory leaks.
 
@@ -99,7 +99,7 @@ class CounterViewModel : ElmComponentViewModel<CounterState, CounterMsg, Nothing
 ```
 
 or extend `ElmBaseViewModel` and implement your component logic right inside the subclass.
-Either way, your component will survive configuration change inside it's `ViewModel` a the `ElmRuntime.clear()`
+Either way, your component will survive configuration change inside it's `ViewModel` a the `ComponentRuntime.clear()`
 will be called in `ViewModel.onCleared()` for you. You can then use your `ViewModel` in Activity/Fragment the same way
 we used runtime above because `ElmComponentViewModel` is essentially just an implementation of runtime:
 
@@ -218,6 +218,13 @@ the previous state.
 
 
 Check out [samples][samples] to explore even more complex solutions.
+
+
+#### Logging
+
+
+#### Testing
+
 
 ## Download
 
