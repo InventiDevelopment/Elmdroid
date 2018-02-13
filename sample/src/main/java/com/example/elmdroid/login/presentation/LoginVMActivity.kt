@@ -3,7 +3,7 @@ package com.example.elmdroid.login.presentation
 import android.arch.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.widget.Toast
+import android.widget.*
 import com.example.elmdroid.R
 import com.example.elmdroid.common.setOnTextChangeListener
 import kotlinx.android.synthetic.main.activity_login.*
@@ -30,12 +30,12 @@ class LoginVMActivity : AppCompatActivity(), LoginView {
         loginButton().setOnClickListener { viewModel.dispatch(LoginClicked) }
     }
 
-    override fun email() = email
-    override fun password() = password
-    override fun loginButton() = loginButton
-    override fun progressBar() = progressBar
-    override fun loggedUser() = loggedUser
-    override fun timer() = timer
+    override fun email(): EditText = email
+    override fun password(): EditText = password
+    override fun loginButton(): Button = loginButton
+    override fun progressBar(): ProgressBar = progressBar
+    override fun loggedUser(): TextView = loggedUser
+    override fun timer(): TextView = timer
     override fun showUserMsg(userMsg: String) = Toast.makeText(this, userMsg, Toast.LENGTH_LONG).show()
 
 }
