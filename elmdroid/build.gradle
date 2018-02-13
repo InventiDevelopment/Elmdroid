@@ -25,7 +25,6 @@ dependencies {
     implementation deps.kotlin.stdlib
 
     // arch
-    implementation deps.timber
     implementation deps.lifecycle.viewmodel
     implementation deps.lifecycle.livedata
 
