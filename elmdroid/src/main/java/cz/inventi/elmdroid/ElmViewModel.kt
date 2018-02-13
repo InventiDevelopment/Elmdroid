@@ -3,12 +3,10 @@ package cz.inventi.elmdroid
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.ViewModel
 
-/**
- * Created by Tomas Valenta on 24.11.2017.
- */
-open class ElmViewModel<STATE : State, in MSG : Msg, CMD : Cmd> (component: Component<STATE, MSG, CMD>) :
+
+open class ElmViewModel<STATE : State, in MSG : Msg, CMD : Cmd> (component: Component<STATE, MSG, CMD>, logLevel: LogLevel = LogLevel.NONE) :
         ViewModel(),
-        ComponentRuntime<STATE, MSG> by ElmRuntime<STATE, MSG, CMD>(component) {
+        ComponentRuntime<STATE, MSG> by ElmRuntime<STATE, MSG, CMD>(component, logLevel) {
 
     override fun onCleared() {
         super.onCleared()
@@ -16,11 +14,11 @@ open class ElmViewModel<STATE : State, in MSG : Msg, CMD : Cmd> (component: Comp
     }
 }
 
-abstract class ElmBaseViewModel<STATE : State, MSG : Msg, CMD : Cmd> : ViewModel(),
+abstract class ElmBaseViewModel<STATE : State, MSG : Msg, CMD : Cmd>(logLevel: LogLevel = LogLevel.NONE) : ViewModel(),
         Component<STATE, MSG, CMD>,
         ComponentRuntime<STATE, MSG> {
 
-    private val runtime = ElmRuntime(this)
+    private val runtime = ElmRuntime(this, logLevel)
 
     override fun state(): LiveData<STATE> = runtime.state()
 
@@ -29,11 +27,11 @@ abstract class ElmBaseViewModel<STATE : State, MSG : Msg, CMD : Cmd> : ViewModel
     override fun clear() = runtime.clear()
 }
 
-abstract class ElmSimpleBaseViewModel<STATE : State, MSG : Msg> : ViewModel(),
+abstract class ElmSimpleBaseViewModel<STATE : State, MSG : Msg>(logLevel: LogLevel = LogLevel.NONE): ViewModel(),
         SimpleComponent<STATE, MSG>,
         ComponentRuntime<STATE, MSG> {
 
-    private val runtime = ElmRuntime(this)
+    private val runtime = ElmRuntime(this, logLevel)
 
     override fun state(): LiveData<STATE> = runtime.state()
 

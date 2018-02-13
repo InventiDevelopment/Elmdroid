@@ -1,11 +1,12 @@
 package com.example.elmdroid.login.presentation
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import com.example.elmdroid.R
 import com.example.elmdroid.common.setOnTextChangeListener
 import cz.inventi.elmdroid.ElmRuntime
+import cz.inventi.elmdroid.LogLevel
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity(), LoginView  {
@@ -18,7 +19,7 @@ class LoginActivity : AppCompatActivity(), LoginView  {
 
         supportActionBar?.title = getString(R.string.complex_login)
 
-        runtime = ElmRuntime(LoginComponent())
+        runtime = ElmRuntime(LoginComponent(), LogLevel.FULL)
 
         // observe state
         runtime.state().observe(this, LoginRenderer(this))

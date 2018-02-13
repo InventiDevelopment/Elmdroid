@@ -1,12 +1,11 @@
 package com.example.elmdroid.counter
 
 import android.arch.lifecycle.Observer
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.TextView
+import android.support.v7.app.AppCompatActivity
 import com.example.elmdroid.R
-import com.example.elmdroid.common.ViewRenderer
 import cz.inventi.elmdroid.ElmRuntime
+import cz.inventi.elmdroid.LogLevel
 import kotlinx.android.synthetic.main.activity_counter.*
 
 class CounterActivity : AppCompatActivity() {
@@ -18,7 +17,7 @@ class CounterActivity : AppCompatActivity() {
         setContentView(R.layout.activity_counter)
         supportActionBar?.title = getString(R.string.basic_counter)
 
-        runtime = ElmRuntime(CounterComponent())
+        runtime = ElmRuntime(CounterComponent(), LogLevel.FULL)
 
         runtime.state().observe(this, Observer {
             it?.let { counter.text = "${it.counter}" }
