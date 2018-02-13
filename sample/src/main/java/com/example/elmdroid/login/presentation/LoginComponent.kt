@@ -15,7 +15,7 @@ class LoginComponent : Component<LoginState, LoginMsg, LoginCmd> {
     override fun update(msg: LoginMsg, prevState: LoginState): Pair<LoginState, LoginCmd?> = when(msg) {
         is EmailChanged ->      prevState.copy(email = msg.email, msgText = "").updateLogin().noCmd()
         is PasswordChanged ->   prevState.copy(password = msg.password, msgText = "").updateLogin().noCmd()
-        is LoginClicked ->      prevState.copy(loadingVisible = true, loginEnabled = false, msgText = "") withCmd LoginAction(prevState.email, prevState.password)
+        LoginClicked ->      prevState.copy(loadingVisible = true, loginEnabled = false, msgText = "") withCmd LoginAction(prevState.email, prevState.password)
         is LoginSuccess ->      prevState.copy(loadingVisible = false, msgText = "Login Successful, welcome ${msg.username}", email = "", password = "").updateLogin().noCmd()
         is LoggedUserChanged -> prevState.copy(loggedUsername = msg.username, loggedTimer = 0).noCmd()
         Tick ->                 prevState.copy(loggedTimer = (prevState.loggedTimer + 1)).noCmd()

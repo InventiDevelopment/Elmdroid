@@ -5,7 +5,8 @@ import android.arch.lifecycle.Observer
 import com.example.elmdroid.login.presentation.*
 import com.example.elmdroid.utils.RxImmediateSchedulerRule
 import com.example.elmdroid.utils.verifyStates
-import cz.inventi.elmdroid.ElmRuntime
+import cz.inventi.elmdroid.ComponentRuntime
+import cz.inventi.elmdroid.RuntimeFactory
 import org.junit.Before
 import org.junit.ClassRule
 import org.junit.Rule
@@ -31,14 +32,14 @@ class LoginComponentTest {
     }
 
     private lateinit var component: LoginComponent
-    private lateinit var runtime: ElmRuntime<LoginState, LoginMsg, LoginCmd>
+    private lateinit var runtime: ComponentRuntime<LoginState, LoginMsg>
     @Mock lateinit var observer: Observer<LoginState>
 
     @Before
     fun setup(){
         MockitoAnnotations.initMocks(this)
         component = LoginComponent()
-        runtime = ElmRuntime(component)
+        runtime = RuntimeFactory.create(component)
     }
 
     @Test

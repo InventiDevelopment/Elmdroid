@@ -6,7 +6,7 @@ import android.arch.lifecycle.ViewModel
 
 open class ElmViewModel<STATE : State, in MSG : Msg, CMD : Cmd> (component: Component<STATE, MSG, CMD>, logLevel: LogLevel = LogLevel.NONE) :
         ViewModel(),
-        ComponentRuntime<STATE, MSG> by ElmRuntime<STATE, MSG, CMD>(component, logLevel) {
+        ComponentRuntime<STATE, MSG> by RxRuntime<STATE, MSG, CMD>(component, logLevel) {
 
     override fun onCleared() {
         super.onCleared()
@@ -18,7 +18,7 @@ abstract class ElmBaseViewModel<STATE : State, MSG : Msg, CMD : Cmd>(logLevel: L
         Component<STATE, MSG, CMD>,
         ComponentRuntime<STATE, MSG> {
 
-    private val runtime = ElmRuntime(this, logLevel)
+    private val runtime = RxRuntime(this, logLevel)
 
     override fun state(): LiveData<STATE> = runtime.state()
 
@@ -31,7 +31,7 @@ abstract class ElmSimpleBaseViewModel<STATE : State, MSG : Msg>(logLevel: LogLev
         SimpleComponent<STATE, MSG>,
         ComponentRuntime<STATE, MSG> {
 
-    private val runtime = ElmRuntime(this, logLevel)
+    private val runtime = RxRuntime(this, logLevel)
 
     override fun state(): LiveData<STATE> = runtime.state()
 

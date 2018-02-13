@@ -13,14 +13,14 @@ import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 
 
-class ElmRuntimeTest {
+class ComponentRuntimeTest {
 
     @JvmField
     @Rule
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var runtime: ElmRuntime<TestState, TestMsg, TestCmd>
+    private lateinit var runtime: ComponentRuntime<TestState, TestMsg>
     @Mock lateinit var observer: Observer<TestState>
     @Mock lateinit var component: Component<TestState, TestMsg, TestCmd>
 
@@ -41,7 +41,7 @@ class ElmRuntimeTest {
     @Test
     fun initState() {
         `when`(component.initState()).thenReturn(TestState(3, "init"))
-        runtime = ElmRuntime(component)
+        runtime = RuntimeFactory.create(component)
         runtime.state().observeForever(observer)
         verify(observer).onChanged(TestState(3, "init"))
     }

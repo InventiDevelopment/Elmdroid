@@ -2,16 +2,17 @@ package com.example.elmdroid.login.presentation
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.widget.Toast
+import android.widget.*
 import com.example.elmdroid.R
 import com.example.elmdroid.common.setOnTextChangeListener
-import cz.inventi.elmdroid.ElmRuntime
+import cz.inventi.elmdroid.ComponentRuntime
 import cz.inventi.elmdroid.LogLevel
+import cz.inventi.elmdroid.RuntimeFactory
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity(), LoginView  {
 
-    private lateinit var runtime: ElmRuntime<LoginState, LoginMsg, LoginCmd>
+    private lateinit var runtime: ComponentRuntime<LoginState, LoginMsg>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,7 +20,7 @@ class LoginActivity : AppCompatActivity(), LoginView  {
 
         supportActionBar?.title = getString(R.string.complex_login)
 
-        runtime = ElmRuntime(LoginComponent(), LogLevel.FULL)
+        runtime = RuntimeFactory.create(LoginComponent(), LogLevel.FULL)
 
         // observe state
         runtime.state().observe(this, LoginRenderer(this))
@@ -35,11 +36,11 @@ class LoginActivity : AppCompatActivity(), LoginView  {
         runtime.clear()
     }
 
-    override fun email() = email
-    override fun password() = password
-    override fun loginButton() = loginButton
-    override fun progressBar() = progressBar
-    override fun loggedUser() = loggedUser
-    override fun timer() = timer
+    override fun email(): EditText = email
+    override fun password(): EditText = password
+    override fun loginButton(): Button = loginButton
+    override fun progressBar(): ProgressBar = progressBar
+    override fun loggedUser(): TextView = loggedUser
+    override fun timer(): TextView = timer
     override fun showUserMsg(userMsg: String) = Toast.makeText(this, userMsg, Toast.LENGTH_LONG).show()
 }

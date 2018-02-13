@@ -14,7 +14,7 @@ import timber.log.Timber
 /**
  *  Implementation of ComponentRuntime based on RxJava and RxRelay
  */
-class ElmRuntime<STATE : State, in MSG : Msg, CMD : Cmd> (component: Component<STATE, MSG, CMD>, private val logLevel: LogLevel = LogLevel.NONE) : ComponentRuntime<STATE, MSG> {
+internal class RxRuntime<STATE : State, in MSG : Msg, CMD : Cmd> (component: Component<STATE, MSG, CMD>, private val logLevel: LogLevel = LogLevel.NONE) : ComponentRuntime<STATE, MSG> {
 
     private val msgRelay: BehaviorRelay<MSG> = BehaviorRelay.create()
     private val stateRelay: BehaviorRelay<STATE> = BehaviorRelay.create()

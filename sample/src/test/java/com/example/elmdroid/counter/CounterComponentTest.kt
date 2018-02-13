@@ -4,7 +4,8 @@ import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.Observer
 import com.example.elmdroid.utils.RxImmediateSchedulerRule
 import com.example.elmdroid.utils.verifyStates
-import cz.inventi.elmdroid.ElmRuntime
+import cz.inventi.elmdroid.ComponentRuntime
+import cz.inventi.elmdroid.RuntimeFactory
 import org.junit.Before
 import org.junit.ClassRule
 import org.junit.Rule
@@ -29,14 +30,14 @@ class CounterComponentTest {
     }
 
     private lateinit var component: CounterComponent
-    private lateinit var runtime: ElmRuntime<CounterState, CounterMsg, Nothing>
+    private lateinit var runtime: ComponentRuntime<CounterState, CounterMsg>
     @Mock lateinit var observer: Observer<CounterState>
 
     @Before
     fun setup(){
         MockitoAnnotations.initMocks(this)
         component = CounterComponent()
-        runtime = ElmRuntime(component)
+        runtime = RuntimeFactory.create(component)
     }
 
     @Test
