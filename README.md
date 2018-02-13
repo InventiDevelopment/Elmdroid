@@ -209,11 +209,8 @@ class CounterSubscription : StatefulSub<LoginState, LoginMsg>() {
 }
 ```
 
-As you can see, the super class is now called `StatefulSub` but also the `invoke(state)` function now takes
-state as a parameter so your stream of data will be restarted every time new state comes out. The last question
-is what does the 'new' mean exactly. If you don't override `isDistinct` it uses the default implementation
-that filters only the states that are equal (using `equals()` method) to the previous state or you can override it
-and choose your own rules for equality. As you can see in this example, we are only interested in new view states
+As you can see, the super class is now called `StatefulSub` and the `invoke(state)` function now takes
+state as a parameter, so your stream of data will be restarted every time new state comes out. The the state is considered new if it's not equal (using `equals()` method) to the previous one, if you want to customize this behaviour just override `isDistinct` and choose your own rules for equality. As you can see in this example, we are only interested in new view states
 if they have different loggedUsername than the previous state.
 
 
