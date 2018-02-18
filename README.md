@@ -21,10 +21,10 @@ UI then simply observes state `LiveData<State>` and renders the changes.
 
 ### Basic synchronous example
 
-Let's say we want to implement simple screen with two buttons for increment/decrement actions and plain `TextView`
+Let's say we want to implement a simple screen with two buttons for increment/decrement actions and plain `TextView`
 to keep track of current "score". You can find this example in [official elm examples][elm-simple-example]
 
-First we have to define state. That can be simply represented as an Kotlin data class. There is nothing interesting about it,
+First we have to define a state. That can be simply represented as a Kotlin data class. There is nothing interesting about it,
 it just holds the current "score" for our counter:
 
 ```kotlin
@@ -54,11 +54,11 @@ class CounterComponent: SimpleComponent<CounterState, CounterMsg> {
 ```
 
 `SimpleComponent` is simplified version of `Component` created for purely synchronous usage.
-Most important part is `simpleUpdate(msg, prevState)` function. It takes incoming
-message with previous state and defines a new state to render. `initState()` simply defines what should be
+The most important part is `simpleUpdate(msg, prevState)` function. It takes incoming
+message with the previous state and defines a new state to render. `initState()` simply defines what should be
 the original state before any `Msg` arrives.
 
-With prepared component, we can simply use it in our activity or fragment:
+With this prepared component, we can simply use it in our activity or fragment:
 
 ```kotlin
 class CounterActivity : AppCompatActivity() {
@@ -87,11 +87,11 @@ class CounterActivity : AppCompatActivity() {
 }
 ```
 
-We need to wrap our component in `ComponentRuntime` which gives you ability to observe current state as `LiveData`
+We need to wrap our component in `ComponentRuntime` which gives you the ability to observe the current state as `LiveData`
 and to dispatch `Increment` and `Decrement` messages. Make sure you call `clear()`
 on runtime in `onDestroy()` to prevent memory leaks.
 
-If you want your component to survive configuration change you have to handle it yourself or you can use
+If you want your component to survive configuration changes you have to handle it yourself or you can use
 `ElmViewModel` and pass in your component:
 
 ```kotlin
@@ -99,7 +99,7 @@ class CounterViewModel : ElmComponentViewModel<CounterState, CounterMsg, Nothing
 ```
 
 or extend `ElmBaseViewModel` and implement your component logic right inside the subclass.
-Either way, your component will survive configuration change inside it's `ViewModel` a the `ComponentRuntime.clear()`
+Either way, your component will survive configuration changes inside it's `ViewModel` a the `ComponentRuntime.clear()`
 will be called in `ViewModel.onCleared()` for you. You can then use your `ViewModel` in Activity/Fragment the same way
 we used runtime above because `ElmComponentViewModel` is essentially just an implementation of runtime:
 
@@ -125,17 +125,17 @@ class CounterActivity : AppCompatActivity() {
 }
 ```
 
-You can check complete counter sample in [samples][counter-sample]
+You can check a complete counter sample in [samples][counter-sample]
 
 ### Commands and Subscriptions
 
-If you want to perform asynchronous action you have two options: start one time async task
+If you want to perform asynchronous an action you have two options: start one time async task
 with a `Cmd` that returns a single result `Msg` back to your update function or you can set up
 a `Subscription` and listen to continuous stream of messages.
 
 #### Commands
 
-All commands starts tasks. Task is simple function that returns RxJava `Single<Msg>`. For example this login Task:
+All commands start tasks. Task is a simple function that returns RxJava `Single<Msg>`. For example this login Task:
 ```kotlin
 fun loginTask(email: String, password: String): Single<LoginMsg> {
     val repo = UserRepository()
@@ -158,7 +158,7 @@ our `update` function is now returning not just the new state but also possible 
 
 After `LoginClicked` message arrives we return state with `loading = true` and we also use `withCmd` to return
 `LoginAction` `Cmd` with it. This is the way to specify immediate state change and async action that should
-fallow. We need to define the last missing peace, the `call()` function that defines which `Cmd` starts which
+follow. We need to define the last missing piece, the `call()` function that defines which `Cmd` starts which
 Task.
 
 ```kotlin
@@ -175,13 +175,13 @@ function again to finally display some logged in state.
 
 You can define two types of subscriptions
 1. `StatelessSub` - Simply starts during `ComponentRuntime` creation and ends when `ComponentRuntime` is cleared.
-It is not effected by any state changes.
+It is not affected by any state changes.
 2. `StatefulSub` - It has the same lifetime but it's given the opportunity to change anytime the state is changed.
 It can even define it's own filter policy, so it can be interested only in some particular state changes.
 
 Example of Stateless subscription could be this LoginSubscription that notifies update function with a new
-message anytime logged user changed. It takes the information about the logged user from the repository not
-form the current view state and that's why it's `Stateless` it has no interest in state and it's not
+message anytime a logged user changed. It takes the information about the logged user from the repository not
+from the current view state and that's why it's `Stateless` it has no interest in state and it's not
 influenced by it in any way. Here is how this subscription might look like:
 
 ```kotlin
@@ -210,8 +210,8 @@ class CounterSubscription : StatefulSub<LoginState, LoginMsg>() {
 ```
 
 As you can see, the super class is now called `StatefulSub` and the `invoke(state)` function now takes
-state as a parameter, so your stream of data will be restarted every time new state comes out.
-The the state is considered new if it's not equal (using `equals()` method) to the previous one,
+state as a parameter, so your stream of data will be restarted every time a new state comes out.
+The state is considered new if it's not equal (using `equals()` method) to the previous one,
 if you want to customize this behaviour just override `isDistinct` and choose your own rules for equality.
 As you can see in this example, we are only interested in new view states if they have different loggedUsername than
 the previous state.
