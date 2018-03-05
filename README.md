@@ -89,7 +89,20 @@ class CounterActivity : AppCompatActivity() {
 
 We need to wrap our component in `ComponentRuntime` which gives you the ability to observe the current state as `LiveData`
 and to dispatch `Increment` and `Decrement` messages. Make sure you call `clear()`
-on runtime in `onDestroy()` to prevent memory leaks.
+on runtime in `onDestroy()` to prevent memory leaks or you can pass `LifecycleOwner` to `RuntimeFactory.create` and runtime
+will handle the `clear()` call automatically.
+
+```kotlin
+
+    runtime = RuntimeFactory.create(CounterComponent(), this /* LifecycleOwner (for example your fragment or activity */ )
+
+//  no need for manual clearing
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        runtime.clear()
+//    }
+
+```
 
 If you want your component to survive configuration changes you have to handle it yourself or you can use
 `ElmViewModel` and pass in your component:
@@ -99,7 +112,7 @@ class CounterViewModel : ElmComponentViewModel<CounterState, CounterMsg, Nothing
 ```
 
 or extend `ElmBaseViewModel` and implement your component logic right inside the subclass.
-Either way, your component will survive configuration changes inside it's `ViewModel` a the `ComponentRuntime.clear()`
+Either way, your component will survive configuration changes inside it's `ViewModel` and the `ComponentRuntime.clear()`
 will be called in `ViewModel.onCleared()` for you. You can then use your `ViewModel` in Activity/Fragment the same way
 we used runtime above because `ElmComponentViewModel` is essentially just an implementation of runtime:
 
