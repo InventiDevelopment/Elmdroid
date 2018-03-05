@@ -1,17 +1,26 @@
 package cz.inventi.elmdroid
 
+import android.arch.lifecycle.DefaultLifecycleObserver
+import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LiveData
 import io.reactivex.Observable
 import io.reactivex.Single
 
 /** UI 'loop' implementation that 'runs" given [Component]. */
-interface ComponentRuntime<STATE : State, in MSG : Msg> {
+interface ComponentRuntime<STATE : State, in MSG : Msg> : DefaultLifecycleObserver {
     /** Provides always up to date [State]. */
     fun state(): LiveData<STATE>
     /** Dispatch [Msg] to handle. */
     fun dispatch(msg: MSG)
     /** Stops the inner loop, no more state updates. */
     fun clear()
+    /** Runtime will be able to call [clear] by itself based on the [lifecycleOwner] */
+    fun bindTo(lifecycleOwner: LifecycleOwner) {
+        lifecycleOwner.lifecycle.addObserver(this)
+    }
+    override fun onDestroy(owner: LifecycleOwner) {
+        clear()
+    }
 }
 
 /** Key class specifying all mayor pars of your elm architecture. */

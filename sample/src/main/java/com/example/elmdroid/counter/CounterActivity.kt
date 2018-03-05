@@ -17,7 +17,7 @@ class CounterActivity : AppCompatActivity() {
         setContentView(R.layout.activity_counter)
         supportActionBar?.title = getString(R.string.basic_counter)
 
-        runtime = RuntimeFactory.create(CounterComponent())
+        runtime = RuntimeFactory.create(CounterComponent(), this)
 
         runtime.state().observe(this, Observer {
             it?.let { counter.text = "${it.counter}" }
@@ -25,10 +25,5 @@ class CounterActivity : AppCompatActivity() {
 
         increment.setOnClickListener { runtime.dispatch(Increment) }
         decrement.setOnClickListener { runtime.dispatch(Decrement) }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        runtime.clear()
     }
 }

@@ -19,7 +19,7 @@ class LoginActivity : AppCompatActivity(), LoginView  {
 
         supportActionBar?.title = getString(R.string.complex_login)
 
-        runtime = RuntimeFactory.create(LoginComponent())
+        runtime = RuntimeFactory.create(LoginComponent(), this)
 
         // observe state
         runtime.state().observe(this, LoginRenderer(this))
@@ -28,11 +28,6 @@ class LoginActivity : AppCompatActivity(), LoginView  {
         email().setOnTextChangeListener { runtime.dispatch(EmailChanged(it)) }
         password().setOnTextChangeListener { runtime.dispatch(PasswordChanged(it)) }
         loginButton().setOnClickListener { runtime.dispatch(LoginClicked) }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        runtime.clear()
     }
 
     override fun email(): EditText = email
