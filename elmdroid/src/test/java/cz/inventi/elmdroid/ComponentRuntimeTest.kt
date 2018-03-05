@@ -11,10 +11,9 @@ import org.junit.ClassRule
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.verify
+import org.mockito.Mockito
+import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
-import org.mockito.Spy
 
 
 class ComponentRuntimeTest {
@@ -24,7 +23,7 @@ class ComponentRuntimeTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    @Spy lateinit var runtime: ComponentRuntime<TestState, TestMsg>
+    lateinit var runtime: ComponentRuntime<TestState, TestMsg>
     @Mock lateinit var observer: Observer<TestState>
     @Mock lateinit var component: Component<TestState, TestMsg, TestCmd>
 
@@ -41,7 +40,8 @@ class ComponentRuntimeTest {
         MockitoAnnotations.initMocks(this)
         `when`(component.initState()).thenReturn(TestState(3, "init"))
         lifecycleOwner = TestLifecycleOwner()
-        runtime = RuntimeFactory.create(component)
+        runtime = Mockito.spy(RuntimeFactory.create(component))
+        runtime.bindTo(lifecycleOwner)
     }
 
     @Test
@@ -55,6 +55,14 @@ class ComponentRuntimeTest {
         lifecycleOwner.markState(Lifecycle.State.CREATED)
         lifecycleOwner.markState(Lifecycle.State.DESTROYED)
         verify(runtime).clear()
+    }
+
+    @Test
+    fun autoClearNotCalled() {
+        lifecycleOwner.markState(Lifecycle.State.INITIALIZED)
+        lifecycleOwner.markState(Lifecycle.State.CREATED)
+        lifecycleOwner.markState(Lifecycle.State.RESUMED)
+        verify(runtime, never()).clear()
     }
 }
 
