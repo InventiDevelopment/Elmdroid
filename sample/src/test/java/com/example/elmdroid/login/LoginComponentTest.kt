@@ -46,7 +46,7 @@ class LoginComponentTest {
     fun formChanges() {
         val startState = LoginState("", "", false, false, "", "", 0 )
         verifyStates(runtime, observer,
-                LoginState("", "", false, false, "", "", 0 ),
+                startState,
                  EmailChanged("a") to startState.copy(email = "a"),
                 EmailChanged("ab") to startState.copy(email = "ab"),
                 PasswordChanged("1") to startState.copy(email = "ab").copy(password = "1").copy(loginEnabled = true),
