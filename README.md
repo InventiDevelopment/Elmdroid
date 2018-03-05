@@ -94,14 +94,14 @@ will handle the `clear()` call automatically.
 
 ```kotlin
 
-    runtime = RuntimeFactory.create(CounterComponent(), this)
+    runtime = RuntimeFactory.create(CounterComponent(), this /* LifecycleOwner (for example your fragment or activity */ )
 
 //  no need for manual clearing
 //    override fun onDestroy() {
 //        super.onDestroy()
 //        runtime.clear()
 //    }
-}
+
 ```
 
 If you want your component to survive configuration changes you have to handle it yourself or you can use
