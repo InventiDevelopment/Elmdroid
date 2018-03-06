@@ -25,7 +25,6 @@ dependencies {
     implementation deps.kotlin.stdlib
 
     // arch
-    implementation deps.lifecycle.runtime
     implementation deps.lifecycle.viewmodel
     implementation deps.lifecycle.livedata
     implementation deps.lifecycle.java8
@@ -47,4 +46,5 @@ dependencies {
     testImplementation deps.hamcrest
     testImplementation deps.kotlin.test
     testImplementation deps.kotlin.stdlib
+    testImplementation deps.lifecycle.runtime
 }
