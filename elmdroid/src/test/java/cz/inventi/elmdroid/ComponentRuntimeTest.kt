@@ -6,6 +6,9 @@ import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LifecycleRegistry
 import android.arch.lifecycle.Observer
 import cz.inventi.elmdroid.utils.RxImmediateSchedulerRule
+import cz.inventi.elmdroid.utils.TestCmd
+import cz.inventi.elmdroid.utils.TestMsg
+import cz.inventi.elmdroid.utils.TestState
 import org.junit.Before
 import org.junit.ClassRule
 import org.junit.Rule
@@ -66,14 +69,6 @@ class ComponentRuntimeTest {
     }
 }
 
-data class TestState(val number: Int, val text: String): State
-
-sealed class TestMsg : Msg
-object ObjMsg : TestMsg()
-data class NumberMsg(val number: Int) : TestMsg()
-
-sealed class TestCmd: Cmd
-data class NumberCmd(val num: Int): TestCmd()
 
 class TestLifecycleOwner : LifecycleOwner {
     private val lifecycleRegistry: LifecycleRegistry = LifecycleRegistry(this)

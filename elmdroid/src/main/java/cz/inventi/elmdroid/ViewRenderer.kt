@@ -4,8 +4,13 @@ import android.arch.lifecycle.DefaultLifecycleObserver
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.Observer
 
+interface ViewRenderer<in V : LifecycleOwner, S: State> : Observer<S>, DefaultLifecycleObserver {
+    fun V.render(state: S)
+    infix fun <T> S.from(getter: (S) -> T): Triple<S, S?, (S) -> T>
+    infix fun <S, T> Triple<S, S?, (S) -> T>.into(apply: (T) -> Unit): S
+}
 
-abstract class ViewRenderer<in V : LifecycleOwner, S: State> (private var view: V?) : Observer<S>, DefaultLifecycleObserver {
+abstract class BaseViewRenderer<in V : LifecycleOwner, S: State> (private var view: V?) : ViewRenderer<V, S> {
 
     private var previouslyRenderedState: S? = null
 
@@ -30,10 +35,8 @@ abstract class ViewRenderer<in V : LifecycleOwner, S: State> (private var view: 
         previouslyRenderedState = null
     }
 
-    abstract fun V.render(state: S)
-
-    infix fun <T> S.applyProperty(getter: (S) -> T): Triple<S, S?, (S) -> T> = Triple(this, previouslyRenderedState, getter)
-    infix fun <S, T> Triple<S, S?, (S) -> T>.into(apply: (T) -> Unit): S {
+    override infix fun <T> S.from(getter: (S) -> T): Triple<S, S?, (S) -> T> = Triple(this, previouslyRenderedState, getter)
+    override infix fun <S, T> Triple<S, S?, (S) -> T>.into(apply: (T) -> Unit): S {
         val (state, prevState, getter) = this
         val newValue = getter(state)
         if (prevState == null || getter(prevState) != newValue) {
