@@ -2,13 +2,8 @@ package cz.inventi.elmdroid
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LifecycleRegistry
 import android.arch.lifecycle.Observer
-import cz.inventi.elmdroid.utils.RxImmediateSchedulerRule
-import cz.inventi.elmdroid.utils.TestCmd
-import cz.inventi.elmdroid.utils.TestMsg
-import cz.inventi.elmdroid.utils.TestState
+import cz.inventi.elmdroid.utils.*
 import org.junit.Before
 import org.junit.ClassRule
 import org.junit.Rule
@@ -66,15 +61,6 @@ class ComponentRuntimeTest {
         lifecycleOwner.markState(Lifecycle.State.CREATED)
         lifecycleOwner.markState(Lifecycle.State.RESUMED)
         verify(runtime, never()).clear()
-    }
-}
-
-
-class TestLifecycleOwner : LifecycleOwner {
-    private val lifecycleRegistry: LifecycleRegistry = LifecycleRegistry(this)
-    override fun getLifecycle(): Lifecycle = lifecycleRegistry
-    fun markState(state: Lifecycle.State) {
-        lifecycleRegistry.markState(state)
     }
 }
 
