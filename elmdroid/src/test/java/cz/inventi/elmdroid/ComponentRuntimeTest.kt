@@ -38,7 +38,7 @@ class ComponentRuntimeTest {
         MockitoAnnotations.initMocks(this)
         `when`(component.initState()).thenReturn(TestState(3, "init"))
         lifecycleOwner = TestLifecycleOwner()
-        runtime = Mockito.spy(RuntimeFactory.create(component))
+        runtime = Mockito.spy(ComponentRuntime.create(component))
         runtime.bindTo(lifecycleOwner)
     }
 

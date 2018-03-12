@@ -2,7 +2,6 @@ package cz.inventi.elmdroid
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.util.Log
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
@@ -44,7 +43,7 @@ internal class RxRuntime<STATE : State, in MSG : Msg, CMD : Cmd> (component: Com
             val subObs: Observable<MSG> = createSubObs(sub, sharedStateRelay)
             val subDisposable = subObs
                 .subscribeNewObserveMain()
-                .doOnSubscribe { log(LogLevel.FULL,"Subscribed sub: $sub") }
+                .doOnSubscribe { log(logLevel, LogLevel.FULL, TAG,"Subscribed sub: $sub") }
                 .subscribe { msg -> dispatch(msg) }
             compositeDisposable.add(subDisposable)
         }
@@ -54,18 +53,18 @@ internal class RxRuntime<STATE : State, in MSG : Msg, CMD : Cmd> (component: Com
 
     override fun clear() {
         compositeDisposable.clear()
-        log(LogLevel.BASIC, "Runtime cleared")
+        log(logLevel, LogLevel.BASIC, TAG, "Runtime cleared")
     }
 
     override fun dispatch(msg: MSG) {
         msgRelay.accept(msg)
-        log(LogLevel.BASIC,"Msg dispatched: $msg")
+        log(logLevel, LogLevel.BASIC, TAG,"Msg dispatched: $msg")
     }
 
     private fun updateStateValue(stateVal: STATE) {
         state.value = stateVal
         stateRelay.accept(stateVal)
-        log(LogLevel.BASIC, "State updated to: $stateVal")
+        log(logLevel, LogLevel.BASIC, TAG, "State updated to: $stateVal")
     }
 
     private fun cmdToMsg(component: Component<STATE, MSG, CMD>): ObservableTransformer<Pair<STATE, CMD?>, MSG> {
@@ -73,7 +72,7 @@ internal class RxRuntime<STATE : State, in MSG : Msg, CMD : Cmd> (component: Com
             obs.filter{ (_, maybeCmd) -> maybeCmd != null }
                 .map { (_, cmd) -> cmd }
                 .observeOn(Schedulers.newThread())
-                .doOnNext { cmd -> log(LogLevel.BASIC, "Calling cmd: $cmd") }
+                .doOnNext { cmd -> log(logLevel, LogLevel.BASIC, TAG, "Calling cmd: $cmd") }
                 .flatMap { cmd -> component.call(cmd).toObservable()}
                 .observeOn(AndroidSchedulers.mainThread())
         }
@@ -88,18 +87,15 @@ internal class RxRuntime<STATE : State, in MSG : Msg, CMD : Cmd> (component: Com
             is StatefulSub<STATE, MSG> -> {
                 sharedStateRelay
                     .distinctUntilChanged { s1, s2 -> !sub.isDistinct(s1, s2) }
-                    .doOnNext{ state -> log(LogLevel.FULL, "New state $state for StatefulSub $sub to handle")}
+                    .doOnNext{ state -> log(logLevel, LogLevel.FULL, TAG,  "New state $state for StatefulSub $sub to handle")}
                     .switchMap { state -> sub(state) }
             }
         }
     }
 
-    private fun log(
-        minLogLevel: LogLevel,
-        logMsg: String
-    ) {
-        if (minLogLevel.logLevelIndex <= logLevel.logLevelIndex) {
-            Log.d("ComponentRuntime", logMsg)
-        }
+    companion object {
+        const val TAG = "ComponentRuntime"
     }
+
+
 }

@@ -6,7 +6,6 @@ import android.widget.*
 import com.example.elmdroid.R
 import com.example.elmdroid.common.setOnTextChangeListener
 import cz.inventi.elmdroid.ComponentRuntime
-import cz.inventi.elmdroid.RuntimeFactory
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity(), LoginView  {
@@ -19,7 +18,7 @@ class LoginActivity : AppCompatActivity(), LoginView  {
 
         supportActionBar?.title = getString(R.string.complex_login)
 
-        runtime = RuntimeFactory.create(LoginComponent(), this)
+        runtime = ComponentRuntime.create(LoginComponent(), this)
 
         // observe state
         runtime.state().observe(this, LoginRenderer(this))

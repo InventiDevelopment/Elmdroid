@@ -21,6 +21,16 @@ interface ComponentRuntime<STATE : State, in MSG : Msg> : DefaultLifecycleObserv
     override fun onDestroy(owner: LifecycleOwner) {
         clear()
     }
+
+    companion object {
+        fun <STATE : State, MSG : Msg, CMD : Cmd> create(component: Component<STATE, MSG, CMD>, lifecycleOwner: LifecycleOwner? = null, logLevel: LogLevel = Elmdroid.defaultLogLevel): ComponentRuntime<STATE, MSG> {
+            val rxRuntime = RxRuntime(component, logLevel)
+            if (lifecycleOwner != null) {
+                rxRuntime.bindTo(lifecycleOwner)
+            }
+            return rxRuntime
+        }
+    }
 }
 
 /** Key class specifying all mayor pars of your elm architecture. */

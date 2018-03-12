@@ -1,12 +1,16 @@
 package com.example.elmdroid.login
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.TextView
 import com.example.elmdroid.login.presentation.*
 import com.example.elmdroid.utils.RxImmediateSchedulerRule
 import com.example.elmdroid.utils.verifyStates
 import cz.inventi.elmdroid.ComponentRuntime
-import cz.inventi.elmdroid.RuntimeFactory
 import org.junit.Before
 import org.junit.ClassRule
 import org.junit.Rule
@@ -14,6 +18,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.Mock
+import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 
 
@@ -33,25 +38,65 @@ class LoginComponentTest {
 
     private lateinit var component: LoginComponent
     private lateinit var runtime: ComponentRuntime<LoginState, LoginMsg>
+    private lateinit var renderer: LoginRenderer
+    @Mock lateinit var view : LoginView
     @Mock lateinit var observer: Observer<LoginState>
+    @Mock lateinit var emailEditText: EditText
+    @Mock lateinit var passwordText: EditText
+    @Mock lateinit var loginButton: Button
+    @Mock lateinit var progressBar: ProgressBar
+    @Mock lateinit var loggedUser: TextView
+    @Mock lateinit var timer: TextView
+    val baseState = LoginState("", "", false, false, "", "", 0 )
 
     @Before
     fun setup(){
         MockitoAnnotations.initMocks(this)
         component = LoginComponent()
-        runtime = RuntimeFactory.create(component)
+        runtime = ComponentRuntime.create(component)
+
+        `when`(view.email()).thenReturn(emailEditText)
+        `when`(view.password()).thenReturn(passwordText)
+        `when`(view.loginButton()).thenReturn(loginButton)
+        `when`(view.progressBar()).thenReturn(progressBar)
+        `when`(view.loggedUser()).thenReturn(loggedUser)
+        `when`(view.timer()).thenReturn(timer)
+        renderer = LoginRenderer(view)
     }
 
     @Test
     fun formChanges() {
-        val startState = LoginState("", "", false, false, "", "", 0 )
+
         verifyStates(runtime, observer,
-                startState,
-                 EmailChanged("a") to startState.copy(email = "a"),
-                EmailChanged("ab") to startState.copy(email = "ab"),
-                PasswordChanged("1") to startState.copy(email = "ab").copy(password = "1").copy(loginEnabled = true),
-                EmailChanged("") to startState.copy(email = "").copy(password = "1").copy(loginEnabled = false),
-                EmailChanged("abc") to startState.copy(email = "abc").copy(password = "1").copy(loginEnabled = true)
+                baseState,
+                 EmailChanged("a") to baseState.copy(email = "a"),
+                EmailChanged("ab") to baseState.copy(email = "ab"),
+                PasswordChanged("1") to baseState.copy(email = "ab").copy(password = "1").copy(loginEnabled = true),
+                EmailChanged("") to baseState.copy(email = "").copy(password = "1").copy(loginEnabled = false),
+                EmailChanged("abc") to baseState.copy(email = "abc").copy(password = "1").copy(loginEnabled = true)
         )
+    }
+
+    @Test
+    fun rendererChanges() {
+        // prepare
+        val stateLiveData = MutableLiveData<LoginState>()
+        stateLiveData.value = baseState
+        stateLiveData.observeForever(renderer)
+        stateLiveData.value = stateLiveData.value!!.copy(email = "1")
+        stateLiveData.value = stateLiveData.value!!.copy(email = "1")
+        stateLiveData.value = stateLiveData.value!!.copy(email = "2")
+        stateLiveData.value = stateLiveData.value!!.copy(password = "1")
+        stateLiveData.value = stateLiveData.value!!.copy(email = "3", password = "2")
+        stateLiveData.value = stateLiveData.value!!.copy(email = "1")
+
+        // verify
+        verify(emailEditText).setText("")
+        verify(emailEditText, times(2)).setText("1")
+        verify(emailEditText).setText("2")
+        verify(emailEditText).setText("3")
+        verify(passwordText).setText("")
+        verify(passwordText).setText("1")
+        verify(passwordText).setText("2")
     }
 }

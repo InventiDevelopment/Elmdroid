@@ -5,7 +5,6 @@ import android.arch.lifecycle.Observer
 import com.example.elmdroid.utils.RxImmediateSchedulerRule
 import com.example.elmdroid.utils.verifyStates
 import cz.inventi.elmdroid.ComponentRuntime
-import cz.inventi.elmdroid.RuntimeFactory
 import org.junit.Before
 import org.junit.ClassRule
 import org.junit.Rule
@@ -37,7 +36,7 @@ class CounterComponentTest {
     fun setup(){
         MockitoAnnotations.initMocks(this)
         component = CounterComponent()
-        runtime = RuntimeFactory.create(component)
+        runtime = ComponentRuntime.create(component)
     }
 
     @Test

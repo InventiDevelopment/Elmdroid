@@ -13,10 +13,10 @@ class LoginComponent : Component<LoginState, LoginMsg, LoginCmd> {
     override fun initState(): LoginState = LoginState("", "", false, false, "", "", 0)
 
     override fun update(msg: LoginMsg, prevState: LoginState): Pair<LoginState, LoginCmd?> = when(msg) {
-        is EmailChanged ->      prevState.copy(email = msg.email, msgText = "").updateLogin().noCmd()
-        is PasswordChanged ->   prevState.copy(password = msg.password, msgText = "").updateLogin().noCmd()
+        is EmailChanged ->      prevState.copy(email = msg.email, msgText = "").updateLoginEnabled().noCmd()
+        is PasswordChanged ->   prevState.copy(password = msg.password, msgText = "").updateLoginEnabled().noCmd()
         LoginClicked ->      prevState.copy(loadingVisible = true, loginEnabled = false, msgText = "") withCmd LoginAction(prevState.email, prevState.password)
-        is LoginSuccess ->      prevState.copy(loadingVisible = false, msgText = "Login Successful, welcome ${msg.username}", email = "", password = "").updateLogin().noCmd()
+        is LoginSuccess ->      prevState.copy(loadingVisible = false, msgText = "Login Successful, welcome ${msg.username}", email = "", password = "").updateLoginEnabled().noCmd()
         is LoggedUserChanged -> prevState.copy(loggedUsername = msg.username, loggedTimer = 0).noCmd()
         Tick ->                 prevState.copy(loggedTimer = (prevState.loggedTimer + 1)).noCmd()
     }
@@ -27,7 +27,7 @@ class LoginComponent : Component<LoginState, LoginMsg, LoginCmd> {
 
     override fun subscriptions(): List<Sub<LoginState, LoginMsg>> = listOf(UserSubscription(), CounterSubscription())
 
-    private fun LoginState.updateLogin() = this.copy(loginEnabled = (email.isNotBlank() && password.isNotBlank()))
+    private fun LoginState.updateLoginEnabled() = this.copy(loginEnabled = (email.isNotBlank() && password.isNotBlank()))
 }
 
 

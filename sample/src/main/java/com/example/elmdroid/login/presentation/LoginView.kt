@@ -6,9 +6,6 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 
-/**
- * Created by tomas.valenta on 11/21/2017.
- */
 interface LoginView : LifecycleOwner {
     fun email(): EditText
     fun password(): EditText

@@ -1,6 +1,6 @@
 package com.example.elmdroid.login.presentation
 
-import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.*
@@ -19,7 +19,7 @@ class LoginVMActivity : AppCompatActivity(), LoginView {
 
         supportActionBar?.title = getString(R.string.complex_login_with_viewmodel)
 
-        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(application).create(LoginViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
 
         // observe state
         viewModel.state().observe(this, LoginRenderer(this))

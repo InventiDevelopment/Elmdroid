@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.example.elmdroid.R
 import cz.inventi.elmdroid.ComponentRuntime
-import cz.inventi.elmdroid.RuntimeFactory
 import kotlinx.android.synthetic.main.activity_counter.*
 
 class CounterActivity : AppCompatActivity() {
@@ -17,7 +16,7 @@ class CounterActivity : AppCompatActivity() {
         setContentView(R.layout.activity_counter)
         supportActionBar?.title = getString(R.string.basic_counter)
 
-        runtime = RuntimeFactory.create(CounterComponent(), this)
+        runtime = ComponentRuntime.create(CounterComponent(), this)
 
         runtime.state().observe(this, Observer {
             it?.let { counter.text = "${it.counter}" }
