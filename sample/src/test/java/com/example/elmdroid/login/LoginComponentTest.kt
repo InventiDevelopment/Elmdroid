@@ -1,7 +1,6 @@
 package com.example.elmdroid.login
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.widget.Button
 import android.widget.EditText
@@ -18,7 +17,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 
 
@@ -75,28 +74,5 @@ class LoginComponentTest {
                 EmailChanged("") to baseState.copy(email = "").copy(password = "1").copy(loginEnabled = false),
                 EmailChanged("abc") to baseState.copy(email = "abc").copy(password = "1").copy(loginEnabled = true)
         )
-    }
-
-    @Test
-    fun rendererChanges() {
-        // prepare
-        val stateLiveData = MutableLiveData<LoginState>()
-        stateLiveData.observeForever(renderer)
-        stateLiveData.value = baseState
-        stateLiveData.value = stateLiveData.value!!.copy(email = "1")
-        stateLiveData.value = stateLiveData.value!!.copy(email = "1")
-        stateLiveData.value = stateLiveData.value!!.copy(email = "2")
-        stateLiveData.value = stateLiveData.value!!.copy(password = "1")
-        stateLiveData.value = stateLiveData.value!!.copy(email = "3", password = "2")
-        stateLiveData.value = stateLiveData.value!!.copy(email = "1")
-
-        // verify
-        verify(emailEditText).setText("")
-        verify(emailEditText, times(2)).setText("1")
-        verify(emailEditText).setText("2")
-        verify(emailEditText).setText("3")
-        verify(passwordText).setText("")
-        verify(passwordText).setText("1")
-        verify(passwordText).setText("2")
     }
 }
