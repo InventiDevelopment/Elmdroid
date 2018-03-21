@@ -301,7 +301,7 @@ allprojects {
 And add the dependency:
 ```groovy
 dependencies {
-    implementation 'com.github.InventiDevelopment:Elmdroid:0.5'
+    implementation 'com.github.InventiDevelopment:Elmdroid:0.5.1'
 }
 ```
 
