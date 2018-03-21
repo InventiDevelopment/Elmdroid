@@ -23,10 +23,10 @@ android {
 
 dependencies {
     implementation deps.kotlin.stdlib
+    implementation deps.support.app_compat
 
     // arch
-    implementation deps.lifecycle.viewmodel
-    implementation deps.lifecycle.livedata
+    implementation deps.lifecycle.extensions
     implementation deps.lifecycle.java8
 
     // rx

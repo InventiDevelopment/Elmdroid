@@ -5,12 +5,11 @@ import android.support.v7.app.AppCompatActivity
 import android.widget.*
 import com.example.elmdroid.R
 import com.example.elmdroid.common.setOnTextChangeListener
-import cz.inventi.elmdroid.ComponentRuntime
+import cz.inventi.elmdroid.createRuntimeFor
 import kotlinx.android.synthetic.main.activity_login.*
+import net.semanticer.renderit.renderit
 
 class LoginActivity : AppCompatActivity(), LoginView  {
-
-    private lateinit var runtime: ComponentRuntime<LoginState, LoginMsg>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,10 +17,10 @@ class LoginActivity : AppCompatActivity(), LoginView  {
 
         supportActionBar?.title = getString(R.string.complex_login)
 
-        runtime = ComponentRuntime.create(LoginComponent(), this)
+        val runtime = createRuntimeFor(LoginComponent())
 
         // observe state
-        runtime.state().observe(this, LoginRenderer(this))
+        renderit(runtime.state(), LoginRenderer(this))
 
         // setup msg dispatching
         email().setOnTextChangeListener { runtime.dispatch(EmailChanged(it)) }
