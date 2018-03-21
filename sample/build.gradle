@@ -29,7 +29,7 @@ android {
 
 dependencies {
     implementation project(':elmdroid')
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation deps.renderit
 
     // arch
     implementation deps.lifecycle.viewmodel
