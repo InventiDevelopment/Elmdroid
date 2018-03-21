@@ -1,11 +1,12 @@
 package com.example.elmdroid.counter
 
-import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.example.elmdroid.R
 import cz.inventi.elmdroid.ComponentRuntime
+import cz.inventi.elmdroid.createRuntime
 import kotlinx.android.synthetic.main.activity_counter.*
+import net.semanticer.renderit.renderit
 
 class CounterActivity : AppCompatActivity() {
 
@@ -16,11 +17,11 @@ class CounterActivity : AppCompatActivity() {
         setContentView(R.layout.activity_counter)
         supportActionBar?.title = getString(R.string.basic_counter)
 
-        runtime = ComponentRuntime.create(CounterComponent(), this)
+        runtime = createRuntime(CounterComponent())
 
-        runtime.state().observe(this, Observer {
-            it?.let { counter.text = "${it.counter}" }
-        })
+        renderit(runtime.state()) { state ->
+            state from { it.counter } into { counter.text = "$it" }
+        }
 
         increment.setOnClickListener { runtime.dispatch(Increment) }
         decrement.setOnClickListener { runtime.dispatch(Decrement) }

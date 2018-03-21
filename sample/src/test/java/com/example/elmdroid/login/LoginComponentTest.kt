@@ -81,8 +81,8 @@ class LoginComponentTest {
     fun rendererChanges() {
         // prepare
         val stateLiveData = MutableLiveData<LoginState>()
-        stateLiveData.value = baseState
         stateLiveData.observeForever(renderer)
+        stateLiveData.value = baseState
         stateLiveData.value = stateLiveData.value!!.copy(email = "1")
         stateLiveData.value = stateLiveData.value!!.copy(email = "1")
         stateLiveData.value = stateLiveData.value!!.copy(email = "2")

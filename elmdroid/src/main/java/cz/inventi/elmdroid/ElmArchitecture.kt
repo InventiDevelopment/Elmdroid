@@ -33,6 +33,10 @@ interface ComponentRuntime<STATE : State, in MSG : Msg> : DefaultLifecycleObserv
     }
 }
 
+fun <V : LifecycleOwner, STATE : State, MSG : Msg, CMD : Cmd> V.createRuntime(component: Component<STATE, MSG, CMD>): ComponentRuntime<STATE, MSG> {
+    return ComponentRuntime.create(component, this)
+}
+
 /** Key class specifying all mayor pars of your elm architecture. */
 interface Component<STATE : State, MSG : Msg, CMD : Cmd> {
     /** Initial [State] that will be provided as soon as the [ComponentRuntime] created. */

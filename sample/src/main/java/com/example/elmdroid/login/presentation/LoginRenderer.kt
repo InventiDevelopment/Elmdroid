@@ -1,10 +1,10 @@
 package com.example.elmdroid.login.presentation
 
 import android.view.View
-import cz.inventi.elmdroid.BaseViewRenderer
+import net.semanticer.renderit.BaseStateRenderer
 
 
-class LoginRenderer(view: LoginView?) : BaseViewRenderer<LoginView, LoginState>(view) {
+class LoginRenderer(view: LoginView?) : BaseStateRenderer<LoginView, LoginState>(view) {
 
     override fun LoginView.render(state: LoginState) {
 
