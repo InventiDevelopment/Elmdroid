@@ -104,6 +104,12 @@ will handle the `clear()` call automatically.
 
 ```
 
+You can go even further and use `createRuntimeFor(component)` helper method that also handles lifecycle for you.
+
+```kotlin
+    runtime = createRuntimeFor(CounterComponent())
+```
+
 If you want your component to survive configuration changes you have to handle it yourself or you can use
 `ElmViewModel` and pass in your component:
 
@@ -138,7 +144,17 @@ class CounterActivity : AppCompatActivity() {
 }
 ```
 
-You can check a complete counter sample in [samples][counter-sample]
+And because we want to make it even easier, we provide `getViewModelFor(component)` function which gives you the option not to define `ElmComponentViewModel`
+subclass and just ask for instance of `ElmComponentViewModel` wrapping given component.
+
+```kotlin
+    viewModel = getViewModelFor(CounterComponent())
+```
+
+Internally it uses `ViewModelProviders.of()` so there is no magic and no surprise behaviour. `getViewModelFor(component)` is just a huge shortcut where otherwise you
+would have to implement your `ViewModelFactory` etc.
+
+Check out [samples][samples] to explore even more.
 
 ### Commands and Subscriptions
 
@@ -285,7 +301,7 @@ allprojects {
 And add the dependency:
 ```groovy
 dependencies {
-    implementation 'com.github.InventiDevelopment:Elmdroid:0.4'
+    implementation 'com.github.InventiDevelopment:Elmdroid:0.5'
 }
 ```
 
