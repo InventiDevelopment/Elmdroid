@@ -23,7 +23,7 @@ android {
 
 dependencies {
     implementation deps.kotlin.stdlib
-    implementation deps.support.app_compat
+    implementation deps.support.v4
 
     // arch
     implementation deps.lifecycle.extensions
