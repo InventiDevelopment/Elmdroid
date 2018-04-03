@@ -1,13 +1,11 @@
 package cz.inventi.elmdroid
 
-import android.arch.lifecycle.DefaultLifecycleObserver
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.*
 import io.reactivex.Observable
 import io.reactivex.Single
 
 /** UI 'loop' implementation that 'runs" given [Component]. */
-interface ComponentRuntime<STATE : State, in MSG : Msg> : DefaultLifecycleObserver {
+interface ComponentRuntime<STATE : State, in MSG : Msg> : LifecycleObserver {
     /** Provides always up to date [State]. */
     fun state(): LiveData<STATE>
     /** Dispatch [Msg] to handle. */
@@ -18,7 +16,9 @@ interface ComponentRuntime<STATE : State, in MSG : Msg> : DefaultLifecycleObserv
     fun bindTo(lifecycleOwner: LifecycleOwner) {
         lifecycleOwner.lifecycle.addObserver(this)
     }
-    override fun onDestroy(owner: LifecycleOwner) {
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy(owner: LifecycleOwner) {
         clear()
     }
 
